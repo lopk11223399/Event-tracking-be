@@ -85,9 +85,8 @@ export const refreshToken = (refresh_token) =>
               resolve({
                 err: accessToken ? 0 : 1,
                 mess: accessToken ? "Ok" : "Fail to generate new access token",
-                access_token: accessToken
-                  ? `Bearer ${accessToken}`
-                  : accessToken,
+                // access_token: accessToken ? `Bearer ${accessToken}`: accessToken,
+                access_token: accessToken ? `${accessToken}` : accessToken,
                 refresh_token: refresh_token,
               });
             }
