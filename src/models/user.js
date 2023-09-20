@@ -16,7 +16,13 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.belongsTo(models.Student, {
         foreignKey: "id",
+        targetKey: "studentId",
         as: "studentData",
+      });
+      User.belongsTo(models.Faculty, {
+        foreignKey: "facultyCode",
+        targetKey: "faculty_code",
+        as: "facultyData",
       });
     }
   }
@@ -35,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       facultyCode: DataTypes.STRING,
       isActive: DataTypes.TINYINT,
       refresh_token: DataTypes.STRING,
+      fileName: DataTypes.STRING,
     },
     {
       sequelize,

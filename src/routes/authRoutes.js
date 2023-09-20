@@ -4,6 +4,7 @@ import * as controllers from "../controllers";
 const router = express.Router();
 
 router.post("/login", controllers.login);
+router.post("/register", controllers.register);
 router.post("/refresh-token", controllers.refreshTokenController);
 
 module.exports = router;

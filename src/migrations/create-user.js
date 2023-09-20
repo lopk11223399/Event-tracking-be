@@ -51,6 +51,9 @@ module.exports = {
       refresh_token: {
         type: Sequelize.STRING,
       },
+      fileName: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: "TIMESTAMP",

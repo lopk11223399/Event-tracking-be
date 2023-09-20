@@ -1,5 +1,6 @@
 const express = require("express");
 require("dotenv").config();
+import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import initRoutes from "./src/routes";
@@ -13,6 +14,13 @@ const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   message: "Too many request from this IP, please try again in an hour!",
 });
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 
 app.use("/api", limiter);
 app.use(helmet());
