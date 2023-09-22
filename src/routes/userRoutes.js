@@ -9,7 +9,7 @@ router.use(verifyToken);
 
 router.get("/:id", controllers.getUser);
 router.put("/:id", uploadCloud.single("avatar"), controllers.updateUser);
-router.delete("/:id", controllers.deleteUser);
+router.post("/change-password", controllers.changePassword);
 
 router.use(isAdmin);
 router.put(
@@ -17,6 +17,7 @@ router.put(
   uploadCloud.single("avatar"),
   controllers.updateInfoAdmin
 );
+router.delete("/:id", controllers.deleteUserByAdmin);
 router.get("/", controllers.getAllUsers);
 router.post("/create-user", controllers.createUserByAdmin);
 

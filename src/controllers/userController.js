@@ -34,7 +34,7 @@ export const createUserByAdmin = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const response = await services.getAllUsers();
+    const response = await services.getAllUsers(req.query);
     return res.status(200).json(response);
   } catch (error) {
     return internalServerError(res);
@@ -113,18 +113,20 @@ export const updateInfoAdmin = async (req, res) => {
   }
 };
 
-export const deleteUser = async (req, res) => {
+export const deleteUserByAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await services.deleteUserByAdmin(id);
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};
+
+export const changePassword = async (req, res) => {
   try {
     const { id } = req.user;
-    const { error } = joi
-      .object({
-        isActive,
-      })
-      .validate(req.body);
-    if (error) {
-      return badRequest(error.details[0]?.message, res);
-    }
-    const response = await services.deleteUser(req.body, id);
+    const response = await services.changePassword(req.body, id);
     return res.status(200).json(response);
   } catch (error) {
     return internalServerError(res);

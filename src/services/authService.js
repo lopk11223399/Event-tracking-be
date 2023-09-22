@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import db from "../models";
 var bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
+import sendMail from "../utils/email";
 
 const hashPassword = (password) => bcrypt.hashSync(password, salt);
 
@@ -16,7 +17,9 @@ export const register = ({ username, password }) => {
           password: hashPassword(password),
         },
       });
-
+      const response1 = await db.Student.create({
+        studentId: response[0].dataValues.id,
+      });
       const accessToken = response[1]
         ? jwt.sign(
             {
@@ -98,6 +101,7 @@ export const login = ({ username, password }) => {
         // access_token: accessToken ? `Bearer ${accessToken}` : accessToken,
         access_token: accessToken ? `${accessToken}` : accessToken,
         refresh_token: refreshToken,
+        response: accessToken ? response : null,
       });
       if (refreshToken) {
         await db.User.update(
@@ -152,6 +156,33 @@ export const refreshToken = (refresh_token) =>
           }
         );
       }
+    } catch (e) {
+      reject(e);
+    }
+  });
+
+export const resetPassword = (email) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.User.findOne({
+        where: { email },
+      });
+      let newPassword = (Math.random() + 1).toString(36).substring(4);
+      if (response) {
+        const response1 = await db.User.update(
+          { password: hashPassword(newPassword) },
+          {
+            where: { email },
+          }
+        );
+        resolve({
+          err: response1[0] > 0 ? true : false,
+          mess: response1[0] > 0 ? "Please check Email!!" : "Email is wrong",
+          newPassword: newPassword,
+        });
+      }
+      const html = `Mật khẩu mới của bạn ở đây ${newPassword} `;
+      await sendMail({ email, html });
     } catch (e) {
       reject(e);
     }

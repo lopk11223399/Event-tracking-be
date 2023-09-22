@@ -1,7 +1,8 @@
 var bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
-import db from "../models";
+import db, { sequelize } from "../models";
 const cloudinary = require("cloudinary").v2;
+import { Op } from "sequelize";
 
 const hashPassword = (password) => bcrypt.hashSync(password, salt);
 
@@ -27,10 +28,20 @@ export const createUserByAdmin = ({ username, password }) =>
     }
   });
 
-export const getAllUsers = () => {
+export const getAllUsers = ({ page, limit, name, order, id, ...query }) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const queries = { raw: true, nest: true };
+      const offset = !page || +page <= 1 ? 0 : +page - 1;
+      const fLimit = +limit || +process.env.LIMIT_USER;
+      queries.offset = offset * fLimit;
+      queries.limit = fLimit;
+      if (order) queries.order = [order];
+      if (name) query.name = { [Op.substring]: name };
+      console.log(queries);
       const response = await db.User.findAndCountAll({
+        where: query,
+        ...queries,
         attributes: {
           exclude: ["password"],
         },
@@ -99,7 +110,7 @@ export const getUser = (userId) => {
         ],
       });
       resolve({
-        err: response ? 0 : 1,
+        err: response ? true : false,
         message: response ? "Got data" : "No data",
         response: response,
       });
@@ -181,19 +192,46 @@ export const updateInfoAdmin = (body, userId, fileData) => {
   });
 };
 
-export const deleteUser = (body, userId) => {
+export const deleteUserByAdmin = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await db.User.update(body, {
+      const response1 = await db.Student.destroy({
+        where: { studentId: userId },
+      });
+      const response = await db.User.destroy({
         where: { id: userId },
       });
       resolve({
         err: response ? 0 : 1,
         message: response ? "Delete successfully" : "not",
-        response: response,
       });
     } catch (error) {
       reject(error);
     }
   });
 };
+
+export const changePassword = (body, userId) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.User.findOne({
+        where: { id: userId },
+      });
+      const isChecked =
+        response && bcrypt.compareSync(body.password, response.password);
+      const response1 = isChecked
+        ? body.newPassword == body.password
+          ? "Must not match the old password"
+          : await db.User.update(
+              { password: hashPassword(body.newPassword) },
+              { where: { id: userId } }
+            )
+        : "Password is wrong";
+      resolve({
+        err: response1[0] > 0 ? true : false,
+        mess: response1[0] > 0 ? "Changed password successfully" : response1,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
