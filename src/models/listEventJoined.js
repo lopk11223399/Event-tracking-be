@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Post extends Model {
+  class ListEventJoin extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,25 +9,22 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      ListEventJoin.belongsTo(models.Event, {
+        foreignKey: "eventId",
+        targetKey: "id",
+        as: "eventData",
+      });
     }
   }
-  Post.init(
+  ListEventJoin.init(
     {
+      userId: DataTypes.INTEGER,
       eventId: DataTypes.INTEGER,
-      adminOrCeatorId: DataTypes.INTEGER,
-      title: DataTypes.STRING,
-      startDate: DataTypes.DATE,
-      finishDate: DataTypes.DATE,
-      image: DataTypes.STRING,
-      description: DataTypes.TEXT,
-      typeEvent: DataTypes.INTEGER,
-      status: DataTypes.INTEGER,
-      categoryEvent: DataTypes.INTEGER,
     },
     {
       sequelize,
-      modelName: "Post",
+      modelName: "ListEventJoin",
     }
   );
-  return Post;
+  return ListEventJoin;
 };

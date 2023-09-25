@@ -78,8 +78,10 @@ export const getAllUsers = ({ page, limit, name, order, id, ...query }) => {
 export const getUser = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await db.User.findOne({
-        where: { id: userId },
+      const response = await db.User.findAll({
+        where: {
+          id: userId,
+        },
         attributes: {
           exclude: [
             "roleId",
@@ -90,24 +92,7 @@ export const getUser = (userId) => {
             "password",
           ],
         },
-        include: [
-          {
-            model: db.Student,
-            as: "studentData",
-            attributes: [
-              "studentId",
-              "classCode",
-              "program",
-              "studentCode",
-              "point",
-            ],
-          },
-          {
-            model: db.Faculty,
-            as: "facultyData",
-            attributes: ["faculty_code", "nameFaculty"],
-          },
-        ],
+        include: ["studentData", "facultyData", "eventData"],
       });
       resolve({
         err: response ? true : false,
@@ -115,6 +100,7 @@ export const getUser = (userId) => {
         response: response,
       });
     } catch (error) {
+      console.log(error);
       reject(error);
     }
   });

@@ -2,23 +2,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Posts", {
-      eventId: {
+    await queryInterface.createTable("Events", {
+      id: {
         allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      adminOrCeatorId: {
+      creatorId: {
         type: Sequelize.INTEGER,
       },
       title: {
         type: Sequelize.STRING,
       },
       startDate: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
       },
       finishDate: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
       },
       image: {
         type: Sequelize.STRING,
@@ -27,13 +28,25 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       typeEvent: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       status: {
         type: Sequelize.INTEGER,
       },
       categoryEvent: {
         type: Sequelize.INTEGER,
+      },
+      totalRate: {
+        type: Sequelize.FLOAT,
+      },
+      qrCode: {
+        type: Sequelize.STRING,
+      },
+      fileNameImage: {
+        type: Sequelize.STRING,
+      },
+      fileNameQr: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -48,6 +61,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Posts");
+    await queryInterface.dropTable("Events");
   },
 };

@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "faculty_code",
         as: "facultyData",
       });
+      User.hasMany(models.Event, {
+        foreignKey: "creatorId",
+        as: "eventData",
+      });
     }
   }
   User.init(

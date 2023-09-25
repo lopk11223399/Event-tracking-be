@@ -15,3 +15,13 @@ export const classCode = joi.string().required();
 export const program = joi.string().required();
 export const studentCode = joi.string().required();
 export const refreshToken = joi.string().required();
+
+export const title = joi.string().required();
+export const creatorId = joi.number().required();
+export const startDate = joi.string().required();
+export const finishDate = joi.string().required();
+export const image = joi.string().required();
+export const description = joi.string().required();
+export const typeEvent = joi.number().required();
+export const status = joi.number().required();
+export const categoryEvent = joi.number().required();
