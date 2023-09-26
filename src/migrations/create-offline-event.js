@@ -2,56 +2,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Events", {
+    await queryInterface.createTable("OfflineEvents", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      creatorId: {
+      eventId: {
         type: Sequelize.INTEGER,
       },
-      title: {
-        type: Sequelize.STRING,
-      },
-      startDate: {
-        type: Sequelize.STRING,
-      },
-      finishDate: {
-        type: Sequelize.STRING,
-      },
-      image: {
-        type: Sequelize.STRING,
-      },
-      description: {
-        type: Sequelize.TEXT,
-      },
-      typeEvent: {
+      roomId: {
         type: Sequelize.INTEGER,
       },
-      status: {
+      location: {
+        type: Sequelize.STRING,
+      },
+      topic: {
+        type: Sequelize.STRING,
+      },
+      numberRoom: {
         type: Sequelize.INTEGER,
       },
-      categoryEvent: {
-        type: Sequelize.INTEGER,
-      },
-      totalRate: {
-        type: Sequelize.FLOAT,
+      timeRoom: {
+        type: Sequelize.STRING,
       },
       qrCode: {
-        type: Sequelize.STRING,
-      },
-      // limitParticipant: {
-      //   type: Sequelize.INTEGER,
-      // },
-      // addPoint: {
-      //   type: Sequelize.FLOAT,
-      // },
-      fileNameImage: {
-        type: Sequelize.STRING,
-      },
-      fileNameQr: {
         type: Sequelize.STRING,
       },
       createdAt: {
@@ -67,6 +43,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Events");
+    await queryInterface.dropTable("OfflineEvents");
   },
 };

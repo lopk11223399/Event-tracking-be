@@ -14,11 +14,6 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "statusEvent",
       });
-      Event.belongsTo(models.Category, {
-        foreignKey: "categoryEvent",
-        targetKey: "id",
-        as: "categoryData",
-      });
       Event.hasOne(models.User, {
         foreignKey: "id",
       });
@@ -37,6 +32,8 @@ module.exports = (sequelize, DataTypes) => {
       categoryEvent: DataTypes.INTEGER,
       totalRate: DataTypes.FLOAT,
       qrCode: DataTypes.STRING,
+      // addPoint: DataTypes.FLOAT,
+      // limitParticipant: DataTypes.INTEGER,
       fileNameImage: DataTypes.STRING,
       fileNameQr: DataTypes.STRING,
     },

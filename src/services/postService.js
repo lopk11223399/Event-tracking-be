@@ -31,18 +31,15 @@ export const createEvent = (body, id) => {
 export const getEvent = ({ status }, id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      // if (status) {
-      //   var statusess = status.map((item) => [{ status: Number(item) }]);
-      // }
-      // const response = await db.Event.findAll({
-      //   where: {
-      //     creatorId: id,
-      //     ...(status && { [Op.or]: statusess }),
-      //   },
-      //   include: ["statusEvent", "categoryData"],
-      // });
-      const response = await db.ListEventJoin.findAndCountAll({
-        include: ["eventData"],
+      if (status) {
+        var statusess = status.map((item) => [{ status: Number(item) }]);
+      }
+      const response = await db.Event.findAll({
+        where: {
+          creatorId: id,
+          ...(status && { [Op.or]: statusess }),
+        },
+        include: ["statusEvent"],
       });
       resolve({
         err: response ? true : false,
