@@ -1,11 +1,19 @@
 import joi from "joi";
 import * as services from "../services";
 import { internalServerError, badRequest } from "../middlewares/handle_errors";
-import { username, password, refreshToken, email } from "../helpers/joi_schema";
+import {
+  username,
+  password,
+  refreshToken,
+  email,
+  name,
+} from "../helpers/joi_schema";
 
 export const register = async (req, res) => {
   try {
-    const { error } = joi.object({ username, password }).validate(req.body);
+    const { error } = joi
+      .object({ username, password, email, name })
+      .validate(req.body);
     if (error) {
       return badRequest(error.details[0]?.message, res);
     }

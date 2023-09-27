@@ -17,6 +17,34 @@ module.exports = (sequelize, DataTypes) => {
       Event.hasOne(models.User, {
         foreignKey: "id",
       });
+      Event.belongsTo(models.User, {
+        foreignKey: "creatorId",
+        as: "author",
+      });
+      Event.hasMany(models.ListPeopleJoin, {
+        foreignKey: "eventId",
+        as: "userJoined",
+      });
+      Event.hasMany(models.ListEventFollow, {
+        foreignKey: "eventId",
+        as: "follower",
+      });
+      Event.hasMany(models.Feedback, {
+        foreignKey: "eventId",
+        as: "feedback",
+      });
+      Event.hasMany(models.Comment, {
+        foreignKey: "eventId",
+        as: "commentEvent",
+      });
+      Event.hasMany(models.OfflineEvent, {
+        foreignKey: "eventId",
+        as: "offlineEvent",
+      });
+      Event.hasMany(models.OnlineEvent, {
+        foreignKey: "eventId",
+        as: "onlineEvent",
+      });
     }
   }
   Event.init(
@@ -42,6 +70,5 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Event",
     }
   );
-  // Event.removeAttribute("id");
   return Event;
 };

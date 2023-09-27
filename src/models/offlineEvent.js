@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      OfflineEvent.hasOne(models.Event, {
+        foreignKey: "id",
+      });
     }
   }
   OfflineEvent.init(

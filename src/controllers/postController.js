@@ -58,3 +58,40 @@ export const updateEvent = async (req, res) => {
     return internalServerError(res);
   }
 };
+
+export const getAllEvent = async (req, res) => {
+  try {
+    const response = await services.getAllEvent(req.query);
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};
+
+export const filterEventHot = async (req, res) => {
+  try {
+    const response = await services.filterEventHot();
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};
+
+export const filterEventToday = async (req, res) => {
+  try {
+    const response = await services.filterEventToday();
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};
+
+export const detailEvent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await services.detailEvent(id);
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};

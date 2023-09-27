@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Comment.hasOne(models.Event, {
+        foreignKey: "id",
+      });
     }
   }
   Comment.init(

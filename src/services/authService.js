@@ -4,17 +4,20 @@ import db from "../models";
 var bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
 import sendMail from "../utils/email";
+import { Op } from "sequelize";
 
 const hashPassword = (password) => bcrypt.hashSync(password, salt);
 
-export const register = ({ username, password }) => {
+export const register = ({ username, password, email, name }) => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await db.User.findOrCreate({
-        where: { username },
+        where: { [Op.or]: [{ username: username }, { email: email }] },
         defaults: {
           username,
           password: hashPassword(password),
+          email,
+          name,
         },
       });
       const response1 = await db.Student.create({
@@ -42,12 +45,8 @@ export const register = ({ username, password }) => {
           )
         : null;
       resolve({
-        err: accessToken ? 0 : 1,
-        message: accessToken ? "Register successfully" : `Username is exist`,
-
-        // access_token: accessToken ? `Bearer ${accessToken}` : accessToken,
-        access_token: accessToken ? `${accessToken}` : accessToken,
-        refresh_token: refreshToken,
+        err: accessToken ? true : false,
+        message: accessToken ? "Đăng ký thành công" : "Đăng ký thất bại",
       });
       if (refreshToken) {
         await db.User.update(
@@ -92,15 +91,12 @@ export const login = ({ username, password }) => {
           })
         : null;
       resolve({
-        err: accessToken ? 0 : 1,
+        err: accessToken ? true : false,
         message: accessToken
-          ? "Login successfully"
-          : response
-          ? "Password was wrong"
-          : `Username is'n exist`,
-        // access_token: accessToken ? `Bearer ${accessToken}` : accessToken,
-        access_token: accessToken ? `${accessToken}` : accessToken,
-        refresh_token: refreshToken,
+          ? "Đăng nhập thành công"
+          : "Username hoặc password sai",
+        // token: accessToken ? `Bearer ${accessToken}` : accessToken,
+        token: accessToken ? `${accessToken}` : accessToken,
         response: accessToken ? response : null,
       });
       if (refreshToken) {
