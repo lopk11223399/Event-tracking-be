@@ -21,22 +21,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "creatorId",
         as: "author",
       });
-      Event.hasMany(models.ListPeopleJoin, {
-        foreignKey: "eventId",
-        as: "userJoined",
-      });
-      Event.hasMany(models.ListEventFollow, {
-        foreignKey: "eventId",
-        as: "follower",
-      });
-      Event.hasMany(models.Feedback, {
-        foreignKey: "eventId",
-        as: "feedback",
-      });
-      Event.hasMany(models.Comment, {
-        foreignKey: "eventId",
-        as: "commentEvent",
-      });
       Event.hasMany(models.OfflineEvent, {
         foreignKey: "eventId",
         as: "offlineEvent",
@@ -44,6 +28,22 @@ module.exports = (sequelize, DataTypes) => {
       Event.hasMany(models.OnlineEvent, {
         foreignKey: "eventId",
         as: "onlineEvent",
+      });
+      Event.belongsToMany(models.User, {
+        through: "ListEventFollow",
+        as: "followers",
+      });
+      Event.belongsToMany(models.User, {
+        through: "Comment",
+        as: "commentEvent",
+      });
+      Event.belongsToMany(models.User, {
+        through: "ListPeopleJoin",
+        as: "userJoined",
+      });
+      Event.belongsToMany(models.User, {
+        through: "Feedback",
+        as: "feedback",
       });
     }
   }

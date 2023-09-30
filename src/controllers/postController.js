@@ -39,15 +39,15 @@ export const createEvent = async (req, res) => {
   }
 };
 
-export const getEvent = async (req, res) => {
-  try {
-    const { id } = req.user;
-    const response = await services.getEvent(req.query, id);
-    return res.status(200).json(response);
-  } catch (error) {
-    return internalServerError(res);
-  }
-};
+// export const getEvent = async (req, res) => {
+//   try {
+//     const { id } = req.user;
+//     const response = await services.getEvent(req.query, id);
+//     return res.status(200).json(response);
+//   } catch (error) {
+//     return internalServerError(res);
+//   }
+// };
 
 export const updateEvent = async (req, res) => {
   try {
@@ -86,10 +86,20 @@ export const filterEventToday = async (req, res) => {
   }
 };
 
-export const detailEvent = async (req, res) => {
+export const getEvent = async (req, res) => {
   try {
     const { id } = req.params;
-    const response = await services.detailEvent(id);
+    const response = await services.getEvent(id);
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};
+
+export const getAllFollower = async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const response = await services.getAllFollower(eventId);
     return res.status(200).json(response);
   } catch (error) {
     return internalServerError(res);

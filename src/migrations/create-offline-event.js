@@ -15,9 +15,6 @@ module.exports = {
       roomId: {
         type: Sequelize.INTEGER,
       },
-      location: {
-        type: Sequelize.STRING,
-      },
       topic: {
         type: Sequelize.STRING,
       },

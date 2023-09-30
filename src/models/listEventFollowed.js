@@ -9,8 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      ListEventFollow.hasOne(models.Event, {
-        foreignKey: "id",
+      ListEventFollow.belongsTo(models.User, {
+        foreignKey: "userId",
+        as: "followers",
       });
     }
   }

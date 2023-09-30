@@ -45,7 +45,7 @@ export const register = ({ username, password, email, name }) => {
           )
         : null;
       resolve({
-        err: accessToken ? true : false,
+        success: accessToken ? true : false,
         message: accessToken ? "Đăng ký thành công" : "Đăng ký thất bại",
       });
       if (refreshToken) {
@@ -91,7 +91,7 @@ export const login = ({ username, password }) => {
           })
         : null;
       resolve({
-        err: accessToken ? true : false,
+        success: accessToken ? true : false,
         message: accessToken
           ? "Đăng nhập thành công"
           : "Username hoặc password sai",
@@ -145,7 +145,7 @@ export const refreshToken = (refresh_token) =>
                 err: accessToken ? 0 : 1,
                 mess: accessToken ? "Ok" : "Fail to generate new access token",
                 // access_token: accessToken ? `Bearer ${accessToken}`: accessToken,
-                access_token: accessToken ? `${accessToken}` : accessToken,
+                token: accessToken ? `${accessToken}` : accessToken,
                 refresh_token: refresh_token,
               });
             }

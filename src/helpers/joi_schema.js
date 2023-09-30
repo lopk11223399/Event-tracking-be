@@ -25,3 +25,5 @@ export const description = joi.string().required();
 export const typeEvent = joi.number().required();
 export const status = joi.number().required();
 export const categoryEvent = joi.number().required();
+
+export const comment = joi.string().required().min(8);

@@ -28,6 +28,18 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "creatorId",
         as: "eventData",
       });
+      User.belongsToMany(models.Event, {
+        through: "ListEventFollow",
+      });
+      User.belongsToMany(models.Event, {
+        through: "Comment",
+      });
+      User.belongsToMany(models.Event, {
+        through: "ListPeopleJoin",
+      });
+      User.belongsToMany(models.Event, {
+        through: "Feedback",
+      });
     }
   }
   User.init(

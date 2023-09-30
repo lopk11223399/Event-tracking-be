@@ -28,30 +28,30 @@ export const createEvent = (body, id) => {
   });
 };
 
-export const getEvent = ({ status }, id) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      if (status) {
-        var statusess = status.map((item) => [{ status: Number(item) }]);
-      }
-      const response = await db.Event.findAll({
-        where: {
-          creatorId: id,
-          ...(status && { [Op.or]: statusess }),
-        },
-        include: ["statusEvent"],
-      });
-      resolve({
-        err: response ? true : false,
-        message: response ? "Got events successfull" : "not",
-        response: response,
-      });
-    } catch (error) {
-      console.log(error);
-      reject(error);
-    }
-  });
-};
+// export const getEvent = ({ status }, id) => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       if (status) {
+//         var statusess = status.map((item) => [{ status: Number(item) }]);
+//       }
+//       const response = await db.Event.findAll({
+//         where: {
+//           creatorId: id,
+//           ...(status && { [Op.or]: statusess }),
+//         },
+//         include: ["statusEvent"],
+//       });
+//       resolve({
+//         err: response ? true : false,
+//         message: response ? "Got events successfull" : "not",
+//         response: response,
+//       });
+//     } catch (error) {
+//       console.log(error);
+//       reject(error);
+//     }
+//   });
+// };
 
 export const updateEvent = (body, eventId) => {
   return new Promise(async (resolve, reject) => {
@@ -69,21 +69,65 @@ export const updateEvent = (body, eventId) => {
   });
 };
 
-export const getAllEvent = ({ order, ...query }) => {
+export const getAllEvent = ({
+  order,
+  page,
+  limit,
+  title,
+  status,
+  date,
+  ...query
+}) => {
   return new Promise(async (resolve, reject) => {
     try {
       const queries = { raw: true, nest: true };
+      const offset = !page || +page <= 1 ? 0 : +page - 1;
+      const fLimit = +limit || +process.env.LIMIT_USER;
+      queries.offset = offset * fLimit;
+      queries.limit = fLimit;
       if (order) queries.order = [order];
+      if (title) query.title = { [Op.substring]: title };
+      if (date) query.startDate = { [Op.endsWith]: date };
+      if (status) {
+        let statusess = status.map((item) => Number(item));
+        query.status = { [Op.or]: statusess };
+      }
+      console.log(query);
       const response = await db.Event.findAndCountAll({
+        where: query,
         ...queries,
       });
+      // const response1 = await db.ListPeopleJoin.findAll({
+      //   attributes: [
+      //     "eventId",
+      //     [sequelize.fn("COUNT", "*"), "total_participants"],
+      //   ],
+      //   group: ["eventId"],
+      //   order: [["total_participants", "DESC"]],
+      //   include: [
+      //     {
+      //       model: db.Event,
+      //       as: "eventData",
+      //       attributes: [
+      //         "id",
+      //         "creatorId",
+      //         "title",
+      //         "image",
+      //         "startDate",
+      //         "finishDate",
+      //         "status",
+      //       ],
+      //       include: ["author"],
+      //     },
+      //   ],
+      // });
+
       resolve({
         err: response ? true : false,
         message: response ? "Get data success" : "Get data failure",
         response: response,
       });
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });
@@ -107,10 +151,12 @@ export const filterEventHot = () => {
               "id",
               "creatorId",
               "title",
+              "image",
               "startDate",
               "finishDate",
               "status",
             ],
+            include: ["author"],
           },
         ],
       });
@@ -164,20 +210,46 @@ export const filterEventToday = () => {
   });
 };
 
-export const detailEvent = (eventId) => {
+export const getAllFollower = (eventId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.ListEventFollow.findAll({
+        where: { eventId: eventId },
+        attributes: ["eventId"],
+        include: [
+          {
+            model: db.User,
+            as: "followers",
+            attributes: [
+              "id",
+              "name",
+              "gender",
+              "email",
+              "birthDate",
+              "avatar",
+              "facultyCode",
+              "phone",
+            ],
+          },
+        ],
+      });
+      resolve({
+        err: response ? true : false,
+        message: response ? "Get data success" : "Get data failure",
+        response: response,
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+};
+
+export const getEvent = (eventId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const response1 = await db.Event.findAll({
         where: { id: eventId },
-        attributes: {
-          exclude: [
-            "creatorId",
-            "fileNameImage",
-            "fileNameQr",
-            "updatedAt",
-            "status",
-          ],
-        },
         include: [
           {
             model: db.User,
@@ -185,14 +257,14 @@ export const detailEvent = (eventId) => {
             attributes: ["id", "name", "email", "avatar"],
           },
           {
-            model: db.ListEventFollow,
-            as: "follower",
-            attributes: ["userId"],
+            model: db.User,
+            as: "followers",
+            attributes: ["id", "name", "email", "avatar"],
           },
           {
-            model: db.ListPeopleJoin,
+            model: db.User,
             as: "userJoined",
-            attributes: ["userId"],
+            attributes: ["id", "name", "email", "avatar"],
           },
           {
             model: db.Status,
@@ -200,14 +272,14 @@ export const detailEvent = (eventId) => {
             attributes: ["id", "statusName"],
           },
           {
-            model: db.Feedback,
+            model: db.User,
             as: "feedback",
-            attributes: ["userId", "feedback", "createdAt"],
+            attributes: ["id", "name", "email", "avatar"],
           },
           {
-            model: db.Comment,
+            model: db.User,
             as: "commentEvent",
-            attributes: ["userId", "comment", "createdAt"],
+            attributes: ["id", "name", "email", "avatar"],
           },
           {
             model: db.OfflineEvent,
@@ -218,7 +290,47 @@ export const detailEvent = (eventId) => {
             as: "onlineEvent",
           },
         ],
+        attributes: {
+          exclude: [
+            "creatorId",
+            "fileNameImage",
+            "fileNameQr",
+            "updatedAt",
+            "status",
+          ],
+        },
       });
+      const event = response1;
+      event[0].dataValues.followers.forEach((follower) => {
+        delete follower.dataValues.ListEventFollow;
+      });
+
+      event[0].dataValues.commentEvent.forEach((comment) => {
+        const listComment = comment.dataValues.Comment;
+
+        comment.dataValues.comment = listComment.comment;
+        comment.dataValues.createdAt = listComment.createdAt;
+
+        delete comment.dataValues.Comment;
+      });
+
+      event[0].dataValues.feedback.forEach((feedback) => {
+        const listFeedback = feedback.dataValues.Feedback;
+
+        feedback.dataValues.rate = listFeedback.rate;
+        feedback.dataValues.feedback = listFeedback.feedback;
+
+        delete feedback.dataValues.Feedback;
+      });
+
+      event[0].dataValues.userJoined.forEach((user) => {
+        const userJoined = user.dataValues.ListPeopleJoin;
+
+        user.dataValues.roomId = userJoined.roomId;
+
+        delete user.dataValues.ListPeopleJoin;
+      });
+
       resolve({
         success: response1 ? true : false,
         mess: response1 ? "Lấy dữ liệu thành công" : "Có lỗi",
