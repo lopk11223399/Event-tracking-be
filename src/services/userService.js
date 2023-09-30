@@ -92,7 +92,18 @@ export const getUser = (userId) => {
             "password",
           ],
         },
-        include: ["studentData", "facultyData", "eventData"],
+        include: [
+          {
+            model: db.Student,
+            as: "studentData",
+            attributes: ["id", "classCode", "program", "studentCode", "point"],
+          },
+          {
+            model: db.Faculty,
+            as: "facultyData",
+            attributes: ["id", "faculty_code", "nameFaculty"],
+          },
+        ],
       });
       resolve({
         err: response ? true : false,

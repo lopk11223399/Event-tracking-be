@@ -12,9 +12,10 @@ router.get("/detail-event/:id", controllers.getEvent);
 router.get("/get-all-follower/:eventId", controllers.getAllFollower);
 
 router.use(verifyToken);
+
+router.post("/follow/:eventId", controllers.followEvent);
 router.use(isCreator);
 router.post("/", controllers.createEvent);
-// router.get("/get-event", controllers.getEvent);
 router.put("/update-event/:id", controllers.updateEvent);
 
 module.exports = router;

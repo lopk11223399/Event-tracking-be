@@ -97,7 +97,6 @@ export const login = ({ username, password }) => {
           : "Username hoặc password sai",
         // token: accessToken ? `Bearer ${accessToken}` : accessToken,
         token: accessToken ? `${accessToken}` : accessToken,
-        response: accessToken ? response : null,
       });
       if (refreshToken) {
         await db.User.update(

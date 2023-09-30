@@ -28,31 +28,6 @@ export const createEvent = (body, id) => {
   });
 };
 
-// export const getEvent = ({ status }, id) => {
-//   return new Promise(async (resolve, reject) => {
-//     try {
-//       if (status) {
-//         var statusess = status.map((item) => [{ status: Number(item) }]);
-//       }
-//       const response = await db.Event.findAll({
-//         where: {
-//           creatorId: id,
-//           ...(status && { [Op.or]: statusess }),
-//         },
-//         include: ["statusEvent"],
-//       });
-//       resolve({
-//         err: response ? true : false,
-//         message: response ? "Got events successfull" : "not",
-//         response: response,
-//       });
-//     } catch (error) {
-//       console.log(error);
-//       reject(error);
-//     }
-//   });
-// };
-
 export const updateEvent = (body, eventId) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -156,7 +131,6 @@ export const filterEventHot = () => {
               "finishDate",
               "status",
             ],
-            include: ["author"],
           },
         ],
       });
@@ -182,7 +156,7 @@ export const filterEventToday = () => {
         ("0" + (d.getMonth() + 1)).slice(-2) +
         "-" +
         d.getFullYear();
-      const response = await db.Event.findAll({
+      const response = await db.Event.findAndCountAll({
         where: {
           startDate: {
             [Op.startsWith]: date,
@@ -336,6 +310,46 @@ export const getEvent = (eventId) => {
         mess: response1 ? "Lấy dữ liệu thành công" : "Có lỗi",
         response1: response1,
       });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+};
+
+export const followEvent = (userId, eventId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const isFollow = await db.ListEventFollow.findOne({
+        where: { [Op.and]: [{ UserId: userId }, { EventId: eventId }] },
+      });
+      if (isFollow) {
+        const response = await db.ListEventFollow.destroy({
+          where: { [Op.and]: [{ UserId: userId }, { EventId: eventId }] },
+        });
+        console.log(response);
+        resolve({
+          err: response ? true : false,
+          message: response
+            ? "Đã hủy theo dõi sự kiện này"
+            : "Đã xảy ra lỗi gì đó vui lòng thử lại",
+        });
+      } else {
+        const response = await db.ListEventFollow.findOrCreate({
+          where: { EventId: eventId },
+          defaults: {
+            UserId: userId,
+            EventId: eventId,
+          },
+        });
+        resolve({
+          err: response[1] ? true : false,
+          message: response[1]
+            ? "Đã theo dõi sự kiện này thành công"
+            : "Đã xảy ra lỗi gì đó vui lòng thử lại",
+          response: response[1],
+        });
+      }
     } catch (error) {
       console.log(error);
       reject(error);

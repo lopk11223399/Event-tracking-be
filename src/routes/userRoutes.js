@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.use(verifyToken);
 
-router.get("/:id", controllers.getUser);
+router.get("/get-current-user", controllers.getUser);
 router.put("/:id", uploadCloud.single("avatar"), controllers.updateUser);
 router.post("/change-password", controllers.changePassword);
 

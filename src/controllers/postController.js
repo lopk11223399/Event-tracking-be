@@ -39,16 +39,6 @@ export const createEvent = async (req, res) => {
   }
 };
 
-// export const getEvent = async (req, res) => {
-//   try {
-//     const { id } = req.user;
-//     const response = await services.getEvent(req.query, id);
-//     return res.status(200).json(response);
-//   } catch (error) {
-//     return internalServerError(res);
-//   }
-// };
-
 export const updateEvent = async (req, res) => {
   try {
     const { id } = req.params;
@@ -100,6 +90,17 @@ export const getAllFollower = async (req, res) => {
   try {
     const { eventId } = req.params;
     const response = await services.getAllFollower(eventId);
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};
+
+export const followEvent = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { eventId } = req.params;
+    const response = await services.followEvent(id, Number(eventId));
     return res.status(200).json(response);
   } catch (error) {
     return internalServerError(res);
