@@ -12,7 +12,7 @@ export const createEvent = (body, id, fileData) => {
       }
       const response = await db.Event.create({
         title: body.title,
-        creatorId: id,
+        authorId: id,
         startDate: body.startDate,
         finishDate: body.finishDate,
         image: body.image,
@@ -115,7 +115,7 @@ export const filterEventHot = () => {
             as: "eventData",
             attributes: [
               "id",
-              "creatorId",
+              "authorId",
               "title",
               "image",
               "startDate",
@@ -155,7 +155,7 @@ export const filterEventToday = () => {
         },
         attributes: [
           "id",
-          "creatorId",
+          "authorId",
           "title",
           "startDate",
           "finishDate",
@@ -225,7 +225,7 @@ export const getEvent = (eventId) => {
         ],
         attributes: {
           exclude: [
-            "creatorId",
+            "authorId",
             "fileNameImage",
             "fileNameQr",
             "updatedAt",
@@ -282,7 +282,7 @@ export const cancelEvent = (userId, eventId) => {
         { status: 5 },
         {
           where: {
-            [Op.and]: [{ creatorId: userId }, { id: eventId }, { status: 1 }],
+            [Op.and]: [{ authorId: userId }, { id: eventId }, { status: 1 }],
           },
         }
       );

@@ -16,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
       userId: DataTypes.INTEGER,
       eventId: DataTypes.INTEGER,
       isWatched: DataTypes.BOOLEAN,
-      time: DataTypes.STRING,
       content: DataTypes.STRING,
       notification_code: DataTypes.INTEGER,
     },

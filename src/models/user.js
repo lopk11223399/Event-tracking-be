@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.belongsTo(models.Faculty, {
         foreignKey: "facultyCode",
-        targetKey: "faculty_code",
+        targetKey: "id",
         as: "facultyData",
       });
       // User.hasOne(models.ListEventFollow, {
@@ -54,12 +54,11 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       roleId: DataTypes.INTEGER,
       gender: DataTypes.BOOLEAN,
-      birthDate: DataTypes.DATEONLY,
+      birthDate: DataTypes.STRING,
       address: DataTypes.TEXT,
       phone: DataTypes.STRING,
       avatar: DataTypes.STRING,
-      facultyCode: DataTypes.STRING,
-      isActive: DataTypes.TINYINT,
+      facultyCode: DataTypes.INTEGER,
       refresh_token: DataTypes.STRING,
       fileName: DataTypes.STRING,
     },

@@ -16,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Faculty.init(
     {
-      faculty_code: DataTypes.STRING,
       nameFaculty: DataTypes.STRING,
     },
     {

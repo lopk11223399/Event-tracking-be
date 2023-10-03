@@ -17,6 +17,7 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
+        unique: true,
       },
       name: {
         type: Sequelize.STRING,
@@ -30,7 +31,7 @@ module.exports = {
         defaultValue: true,
       },
       birthDate: {
-        type: Sequelize.DATEONLY,
+        type: Sequelize.STRING,
       },
       address: {
         type: Sequelize.TEXT,
@@ -42,11 +43,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       facultyCode: {
-        type: Sequelize.STRING,
-      },
-      isActive: {
-        type: Sequelize.TINYINT(1),
-        defaultValue: 1,
+        type: Sequelize.INTEGER,
       },
       refresh_token: {
         type: Sequelize.STRING,

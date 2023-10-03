@@ -20,9 +20,11 @@ export const register = ({ username, password, email, name }) => {
           name,
         },
       });
-      const response1 = await db.Student.create({
-        studentId: response[0].dataValues.id,
-      });
+      if (response[1]) {
+        const response1 = await db.Student.create({
+          studentId: response[0].dataValues.id,
+        });
+      }
       const accessToken = response[1]
         ? jwt.sign(
             {
@@ -160,22 +162,29 @@ export const resetPassword = (email) =>
   new Promise(async (resolve, reject) => {
     try {
       const response = await db.User.findOne({
-        where: { email },
+        where: { email: email },
       });
+      console.log(response);
       let newPassword = (Math.random() + 1).toString(36).substring(4);
-      if (response) {
-        const response1 = await db.User.update(
+      if (response === null) {
+        resolve({
+          sucess: false,
+          mess: "Email is wrong",
+        });
+      } else {
+        const response = await db.User.update(
           { password: hashPassword(newPassword) },
           {
             where: { email },
           }
         );
         resolve({
-          err: response1[0] > 0 ? true : false,
-          mess: response1[0] > 0 ? "Please check Email!!" : "Email is wrong",
+          sucess: true,
+          mess: "Please check Email!!",
           newPassword: newPassword,
         });
       }
+
       const html = `Mật khẩu mới của bạn ở đây ${newPassword} `;
       await sendMail({ email, html });
     } catch (e) {

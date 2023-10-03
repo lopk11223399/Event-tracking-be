@@ -1,7 +1,7 @@
 import joi from "joi";
 
-export const username = joi.string().required().min(6);
-export const password = joi.string().required().min(6);
+export const username = joi.string().required().min(8);
+export const password = joi.string().required().min(8);
 export const email = joi.string().pattern(new RegExp("gmail.com$")).required();
 export const name = joi.string().required();
 export const address = joi.string().required();

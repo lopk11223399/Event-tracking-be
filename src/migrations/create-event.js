@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      creatorId: {
+      authorId: {
         type: Sequelize.INTEGER,
       },
       title: {
@@ -28,26 +28,29 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       typeEvent: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BOOLEAN,
       },
       status: {
         type: Sequelize.INTEGER,
       },
-      categoryEvent: {
-        type: Sequelize.INTEGER,
+      location: {
+        type: Sequelize.STRING,
       },
-      totalRate: {
-        type: Sequelize.FLOAT,
+      linkUrl: {
+        type: Sequelize.STRING,
       },
       qrCode: {
         type: Sequelize.STRING,
       },
-      // limitParticipant: {
-      //   type: Sequelize.INTEGER,
-      // },
-      // addPoint: {
-      //   type: Sequelize.FLOAT,
-      // },
+      limitParticipant: {
+        type: Sequelize.INTEGER,
+      },
+      addPoint: {
+        type: Sequelize.FLOAT,
+      },
+      totalRate: {
+        type: Sequelize.FLOAT,
+      },
       fileNameImage: {
         type: Sequelize.STRING,
       },

@@ -15,9 +15,6 @@ module.exports = {
       eventId: {
         type: Sequelize.INTEGER,
       },
-      timeComment: {
-        type: Sequelize.STRING,
-      },
       comment: {
         type: Sequelize.STRING,
       },
