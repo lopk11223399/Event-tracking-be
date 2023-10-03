@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "creatorId",
         as: "author",
       });
+      Event.hasMany(models.ListEventFollow, {
+        foreignKey: "eventId",
+        as: "followerData",
+      });
+      Event.hasMany(models.ListPeopleJoin, {
+        foreignKey: "eventId",
+        as: "peopleData",
+      });
       Event.hasMany(models.OfflineEvent, {
         foreignKey: "eventId",
         as: "offlineEvent",

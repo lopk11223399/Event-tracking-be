@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       ListPeopleJoin.hasOne(models.Event, {
         foreignKey: "id",
       });
+      // ListPeopleJoin.hasOne(models.Event, {
+      //   foreignKey: "id",
+      // });
       ListPeopleJoin.belongsTo(models.Event, {
         foreignKey: "eventId",
         as: "eventData",

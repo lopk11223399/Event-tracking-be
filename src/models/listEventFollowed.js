@@ -9,9 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      ListEventFollow.belongsTo(models.User, {
-        foreignKey: "userId",
-        as: "followers",
+      // ListEventFollow.hasMany(models.User, {
+      //   foreignKey: "id",
+      //   as: "followers",
+      // });
+      ListEventFollow.hasOne(models.Event, {
+        foreignKey: "id",
       });
     }
   }

@@ -68,34 +68,10 @@ export const getAllEvent = ({
         query.status = { [Op.or]: statusess };
       }
       console.log(query);
-      const response = await db.Event.findAndCountAll({
+      const response = await db.Event.findAll({
         where: query,
         ...queries,
       });
-      // const response1 = await db.ListPeopleJoin.findAll({
-      //   attributes: [
-      //     "eventId",
-      //     [sequelize.fn("COUNT", "*"), "total_participants"],
-      //   ],
-      //   group: ["eventId"],
-      //   order: [["total_participants", "DESC"]],
-      //   include: [
-      //     {
-      //       model: db.Event,
-      //       as: "eventData",
-      //       attributes: [
-      //         "id",
-      //         "creatorId",
-      //         "title",
-      //         "image",
-      //         "startDate",
-      //         "finishDate",
-      //         "status",
-      //       ],
-      //       include: ["author"],
-      //     },
-      //   ],
-      // });
 
       resolve({
         err: response ? true : false,
@@ -175,41 +151,6 @@ export const filterEventToday = () => {
       resolve({
         success: 1,
         mess: 2,
-        response: response,
-      });
-    } catch (error) {
-      console.log(error);
-      reject(error);
-    }
-  });
-};
-
-export const getAllFollower = (eventId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await db.ListEventFollow.findAll({
-        where: { eventId: eventId },
-        attributes: ["eventId"],
-        include: [
-          {
-            model: db.User,
-            as: "followers",
-            attributes: [
-              "id",
-              "name",
-              "gender",
-              "email",
-              "birthDate",
-              "avatar",
-              "facultyCode",
-              "phone",
-            ],
-          },
-        ],
-      });
-      resolve({
-        err: response ? true : false,
-        message: response ? "Get data success" : "Get data failure",
         response: response,
       });
     } catch (error) {
@@ -317,39 +258,54 @@ export const getEvent = (eventId) => {
   });
 };
 
-export const followEvent = (userId, eventId) => {
+export const cancelEvent = (userId, eventId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const isFollow = await db.ListEventFollow.findOne({
-        where: { [Op.and]: [{ UserId: userId }, { EventId: eventId }] },
-      });
-      if (isFollow) {
-        const response = await db.ListEventFollow.destroy({
-          where: { [Op.and]: [{ UserId: userId }, { EventId: eventId }] },
-        });
-        console.log(response);
-        resolve({
-          err: response ? true : false,
-          message: response
-            ? "Đã hủy theo dõi sự kiện này"
-            : "Đã xảy ra lỗi gì đó vui lòng thử lại",
-        });
-      } else {
-        const response = await db.ListEventFollow.findOrCreate({
-          where: { EventId: eventId },
-          defaults: {
-            UserId: userId,
-            EventId: eventId,
+      const response = await db.Event.update(
+        { status: 5 },
+        {
+          where: { [Op.and]: [{ creatorId: userId }, { id: eventId }] },
+        }
+      );
+      const people = await db.Event.findAll({
+        where: { id: eventId },
+        attributes: ["id"],
+        include: [
+          {
+            model: db.ListEventFollow,
+            as: "followerData",
+            attributes: ["userId"],
           },
-        });
-        resolve({
-          err: response[1] ? true : false,
-          message: response[1]
-            ? "Đã theo dõi sự kiện này thành công"
-            : "Đã xảy ra lỗi gì đó vui lòng thử lại",
-          response: response[1],
-        });
+          {
+            model: db.ListPeopleJoin,
+            as: "peopleData",
+            attributes: ["userId"],
+          },
+        ],
+      });
+      for (const person of people) {
+        for (const follower of person.followerData) {
+          await db.ListEventFollow.destroy({
+            where: {
+              [Op.and]: [{ UserId: follower.userId }, { EventId: eventId }],
+            },
+          });
+        }
       }
+      for (const person of people) {
+        for (const join of person.peopleData) {
+          await db.ListPeopleJoin.destroy({
+            where: {
+              [Op.and]: [{ UserId: join.userId }, { EventId: eventId }],
+            },
+          });
+        }
+      }
+      resolve({
+        success: response ? true : false,
+        mess: response ? "Hủy thành công" : "Đã xảy ra lỗi gì đó",
+        people: people,
+      });
     } catch (error) {
       console.log(error);
       reject(error);

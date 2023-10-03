@@ -13,8 +13,9 @@ router.get("/get-all-follower/:eventId", controllers.getAllFollower);
 
 router.use(verifyToken);
 
-router.post("/follow/:eventId", controllers.followEvent);
 router.use(isCreator);
+
+router.put("/cancel-event/:eventId", controllers.cancelEvent);
 router.post("/", controllers.createEvent);
 router.put("/update-event/:id", controllers.updateEvent);
 

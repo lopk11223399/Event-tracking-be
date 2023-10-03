@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "faculty_code",
         as: "facultyData",
       });
+      // User.hasOne(models.ListEventFollow, {
+      //   foreignKey: "userId",
+      //   as: "followerData",
+      // });
       User.hasMany(models.Event, {
         foreignKey: "creatorId",
         as: "eventData",
