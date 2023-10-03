@@ -215,12 +215,11 @@ export const getEvent = (eventId) => {
           ],
         },
       });
-      const event = response1;
-      event[0].dataValues.followers.forEach((follower) => {
+      response1[0].dataValues.followers.forEach((follower) => {
         delete follower.dataValues.ListEventFollow;
       });
 
-      event[0].dataValues.commentEvent.forEach((comment) => {
+      response1[0].dataValues.commentEvent.forEach((comment) => {
         const listComment = comment.dataValues.Comment;
 
         comment.dataValues.comment = listComment.comment;
@@ -229,7 +228,7 @@ export const getEvent = (eventId) => {
         delete comment.dataValues.Comment;
       });
 
-      event[0].dataValues.feedback.forEach((feedback) => {
+      response1[0].dataValues.feedback.forEach((feedback) => {
         const listFeedback = feedback.dataValues.Feedback;
 
         feedback.dataValues.rate = listFeedback.rate;
@@ -238,7 +237,7 @@ export const getEvent = (eventId) => {
         delete feedback.dataValues.Feedback;
       });
 
-      event[0].dataValues.userJoined.forEach((user) => {
+      response1[0].dataValues.userJoined.forEach((user) => {
         const userJoined = user.dataValues.ListPeopleJoin;
 
         user.dataValues.roomId = userJoined.roomId;
@@ -283,28 +282,41 @@ export const cancelEvent = (userId, eventId) => {
           },
         ],
       });
-      for (const person of people) {
-        for (const follower of person.followerData) {
-          await db.ListEventFollow.destroy({
-            where: {
-              [Op.and]: [{ UserId: follower.userId }, { EventId: eventId }],
-            },
-          });
-        }
-      }
-      for (const person of people) {
-        for (const join of person.peopleData) {
-          await db.ListPeopleJoin.destroy({
-            where: {
-              [Op.and]: [{ UserId: join.userId }, { EventId: eventId }],
-            },
-          });
-        }
-      }
+      people[0].dataValues.followerData.forEach(async (follower) => {
+        await db.ListEventFollow.destroy({
+          where: {
+            [Op.and]: [
+              { UserId: follower.dataValues.userId },
+              { EventId: eventId },
+            ],
+          },
+        });
+        await db.Notification.create({
+          userId: follower.dataValues.userId,
+          eventId: eventId,
+          notification_code: 1,
+          content: "Sự kiện đã bị hủy",
+        });
+      });
+      people[0].dataValues.peopleData.forEach(async (people) => {
+        await db.ListPeopleJoin.destroy({
+          where: {
+            [Op.and]: [
+              { UserId: people.dataValues.userId },
+              { EventId: eventId },
+            ],
+          },
+        });
+        await db.Notification.create({
+          userId: people.dataValues.userId,
+          eventId: eventId,
+          notification_code: 1,
+          content: "Sự kiện đã bị hủy",
+        });
+      });
       resolve({
         success: response ? true : false,
         mess: response ? "Hủy thành công" : "Đã xảy ra lỗi gì đó",
-        people: people,
       });
     } catch (error) {
       console.log(error);
