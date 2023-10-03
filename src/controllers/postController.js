@@ -15,6 +15,7 @@ import {
 
 export const createEvent = async (req, res) => {
   try {
+    const fileData = req.file;
     const { id } = req.user;
     const { error } = joi
       .object({
@@ -25,14 +26,16 @@ export const createEvent = async (req, res) => {
         description,
         typeEvent,
         status,
-        categoryEvent,
       })
-      .validate(req.body);
-    console.log(req.body);
+      .validate({
+        ...req.body,
+        image: fileData?.path,
+      });
     if (error) {
+      if (fileData) cloudinary.uploader.destroy(fileData.filename);
       return badRequest(error.details[0].message, res);
     }
-    const response = await services.createEvent(req.body, id);
+    const response = await services.createEvent(req.body, id, fileData);
     return res.status(200).json(response);
   } catch (error) {
     return internalServerError(res);
@@ -91,6 +94,16 @@ export const cancelEvent = async (req, res) => {
     const { id } = req.user;
     const { eventId } = req.params;
     const response = await services.cancelEvent(id, Number(eventId));
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};
+
+export const deleteEvent = async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const response = await services.deleteEvent(Number(eventId));
     return res.status(200).json(response);
   } catch (error) {
     return internalServerError(res);

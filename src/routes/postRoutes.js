@@ -1,8 +1,8 @@
 import express from "express";
 import * as controllers from "../controllers";
-import { isCreator } from "../middlewares/verify_roles";
+import { isCreator, isAdmin } from "../middlewares/verify_roles";
 import verifyToken from "../middlewares/verify_token";
-import uploadCloud from "../middlewares/uploader";
+import { uploadEvent } from "../middlewares/uploader";
 const router = express.Router();
 
 router.get("/get-event-hot", controllers.filterEventHot);
@@ -13,10 +13,15 @@ router.get("/get-all-follower/:eventId", controllers.getAllFollower);
 
 router.use(verifyToken);
 
-router.use(isCreator);
+router.delete("/delete-event", isAdmin, controllers.deleteEvent);
 
-router.put("/cancel-event/:eventId", controllers.cancelEvent);
-router.post("/", controllers.createEvent);
-router.put("/update-event/:id", controllers.updateEvent);
+router.put("/cancel-event/:eventId", isCreator, controllers.cancelEvent);
+router.post(
+  "/",
+  uploadEvent.single("image"),
+  isCreator,
+  controllers.createEvent
+);
+router.put("/update-event/:id", isCreator, controllers.updateEvent);
 
 module.exports = router;

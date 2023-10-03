@@ -9,7 +9,15 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-const storage = new CloudinaryStorage({
+const eventStorage = new CloudinaryStorage({
+  cloudinary,
+  allowedFormats: ["jpg", "png"],
+  params: {
+    folder: "TE_event",
+  },
+});
+
+const userStorage = new CloudinaryStorage({
   cloudinary,
   allowedFormats: ["jpg", "png"],
   params: {
@@ -17,6 +25,10 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const uploadCloud = multer({ storage });
+const uploadEvent = multer({ storage: eventStorage });
+const uploadUser = multer({ storage: userStorage });
 
-module.exports = uploadCloud;
+module.exports = {
+  uploadEvent,
+  uploadUser,
+};

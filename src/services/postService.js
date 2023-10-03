@@ -1,10 +1,15 @@
 import db, { sequelize } from "../models";
 const cloudinary = require("cloudinary").v2;
 import { Op } from "sequelize";
+import { CronJob } from "cron";
 
-export const createEvent = (body, id) => {
+export const createEvent = (body, id, fileData) => {
   return new Promise(async (resolve, reject) => {
     try {
+      if (fileData) {
+        body.image = fileData?.path;
+        body.fileNameImage = fileData?.filename;
+      }
       const response = await db.Event.create({
         title: body.title,
         creatorId: id,
@@ -14,16 +19,27 @@ export const createEvent = (body, id) => {
         description: body.description,
         typeEvent: body.typeEvent,
         status: body.status,
-        categoryEvent: body.categoryEvent,
+        fileNameImage: body.fileNameImage,
       });
+      if (fileData && !response[0] === 0)
+        cloudinary.uploader.destroy(fileData.filename);
+      const job = new CronJob(
+        "1 * * * * *",
+        function () {
+          cancelEvent(id, response.id);
+        },
+        null,
+        true,
+        "Asia/Ho_Chi_Minh"
+      );
       resolve({
         err: response ? true : false,
         message: response ? "Created event successfull" : "not",
         response: response,
       });
     } catch (error) {
-      console.log(error);
       reject(error);
+      if (fileData) cloudinary.uploader.destroy(fileData.filename);
     }
   });
 };
@@ -67,7 +83,6 @@ export const getAllEvent = ({
         let statusess = status.map((item) => Number(item));
         query.status = { [Op.or]: statusess };
       }
-      console.log(query);
       const response = await db.Event.findAll({
         where: query,
         ...queries,
@@ -196,6 +211,8 @@ export const getEvent = (eventId) => {
             as: "commentEvent",
             attributes: ["id", "name", "email", "avatar"],
           },
+          // Need fix here
+          // ---------------------------------------
           {
             model: db.OfflineEvent,
             as: "offlineEvent",
@@ -204,6 +221,7 @@ export const getEvent = (eventId) => {
             model: db.OnlineEvent,
             as: "onlineEvent",
           },
+          // -------------------------------------
         ],
         attributes: {
           exclude: [
@@ -263,7 +281,9 @@ export const cancelEvent = (userId, eventId) => {
       const response = await db.Event.update(
         { status: 5 },
         {
-          where: { [Op.and]: [{ creatorId: userId }, { id: eventId }] },
+          where: {
+            [Op.and]: [{ creatorId: userId }, { id: eventId }, { status: 1 }],
+          },
         }
       );
       const people = await db.Event.findAll({
@@ -320,6 +340,68 @@ export const cancelEvent = (userId, eventId) => {
       });
     } catch (error) {
       console.log(error);
+      reject(error);
+    }
+  });
+};
+
+export const deleteEvent = (eventId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.Event.findAll({
+        where: { id: eventId },
+        attributes: ["id"],
+        include: [
+          {
+            model: db.ListEventFollow,
+            as: "followerData",
+            attributes: ["userId"],
+          },
+          {
+            model: db.ListPeopleJoin,
+            as: "peopleData",
+            attributes: ["userId"],
+          },
+        ],
+      });
+      const deleteEvent = await db.Event.destroy({ where: { id: eventId } });
+      response[0].dataValues.followerData.forEach(async (follower) => {
+        await db.ListEventFollow.destroy({
+          where: {
+            [Op.and]: [
+              { UserId: follower.dataValues.userId },
+              { EventId: eventId },
+            ],
+          },
+        });
+        await db.Notification.create({
+          userId: follower.dataValues.userId,
+          eventId: eventId,
+          notification_code: 1,
+          content: "Sự kiện đã bị hủy",
+        });
+      });
+      response[0].dataValues.peopleData.forEach(async (people) => {
+        await db.ListPeopleJoin.destroy({
+          where: {
+            [Op.and]: [
+              { UserId: people.dataValues.userId },
+              { EventId: eventId },
+            ],
+          },
+        });
+        await db.Notification.create({
+          userId: people.dataValues.userId,
+          eventId: eventId,
+          notification_code: 1,
+          content: "Sự kiện đã bị hủy",
+        });
+      });
+      resolve({
+        success: deleteEvent ? true : false,
+        mess: deleteEvent ? "Xóa thành công" : "Có lỗi gì đó đã xảy ra",
+      });
+    } catch (error) {
       reject(error);
     }
   });

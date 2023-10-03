@@ -2,19 +2,19 @@ import express from "express";
 import * as controllers from "../controllers";
 import { isAdmin } from "../middlewares/verify_roles";
 import verifyToken from "../middlewares/verify_token";
-import uploadCloud from "../middlewares/uploader";
+import { uploadUser } from "../middlewares/uploader";
 const router = express.Router();
 
 router.use(verifyToken);
 
 router.get("/get-current-user", controllers.getUser);
-router.put("/:id", uploadCloud.single("avatar"), controllers.updateUser);
+router.put("/update-user", uploadUser.single("avatar"), controllers.updateUser);
 router.post("/change-password", controllers.changePassword);
 
 router.use(isAdmin);
 router.put(
   "/update-admin/:id",
-  uploadCloud.single("avatar"),
+  uploadUser.single("avatar"),
   controllers.updateInfoAdmin
 );
 router.delete("/:id", controllers.deleteUserByAdmin);
