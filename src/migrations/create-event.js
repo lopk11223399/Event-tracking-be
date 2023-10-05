@@ -32,6 +32,7 @@ module.exports = {
       },
       status: {
         type: Sequelize.INTEGER,
+        defaultValue: 1,
       },
       location: {
         type: Sequelize.STRING,

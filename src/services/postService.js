@@ -406,3 +406,31 @@ export const deleteEvent = (eventId) => {
     }
   });
 };
+
+// Chưa xong
+export const getEventByUserId = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.User.findAll({
+        where: { id: userId },
+        attributes: {
+          exclude: [
+            "refresh_token",
+            "createdAt",
+            "updatedAt",
+            "fileName",
+            "roleId",
+          ],
+        },
+      });
+      resolve({
+        success: response ? true : false,
+        mess: response ? "Get curent user success" : "Get curent user failure",
+        response: response,
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+};

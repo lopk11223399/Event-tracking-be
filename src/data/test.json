@@ -1,0 +1,22 @@
+[
+  {
+    "studentCode": "26211141778",
+    "fullName": "Đoàn Việt Anh",
+    "slug": "djoanvietanh",
+    "birthDate": "19/05/2002",
+    "className": "DTE-IS 102 Q",
+    "gender": "Nam",
+    "program": "K-26 - Kỹ Thuật Mạng Chuẩn CMU (Đại Học)",
+    "classCode": "K26CMU-TAM"
+  },
+  {
+    "studentCode": "26211126344",
+    "fullName": "Trần Hoàng Đạt",
+    "slug": "tranhoangdjat",
+    "birthDate": "29/01/2001",
+    "className": "DTE-IS 102 Q",
+    "gender": "Nam",
+    "program": "K-26 - Kỹ Thuật Mạng Chuẩn CMU (Đại Học)",
+    "classCode": "K26CMU-TAM"
+  }
+]

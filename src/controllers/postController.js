@@ -109,3 +109,13 @@ export const deleteEvent = async (req, res) => {
     return internalServerError(res);
   }
 };
+
+export const getEventByUserId = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const response = await services.getEventByUserId(id);
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};

@@ -15,7 +15,6 @@ export const postComment = (body, id, eventId) =>
           : "Đã xảy ra một lỗi gì đó vui lòng thử lại",
       });
     } catch (e) {
-      console.log(e);
       reject(e);
     }
   });

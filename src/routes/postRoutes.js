@@ -13,6 +13,8 @@ router.get("/get-all-follower/:eventId", controllers.getAllFollower);
 
 router.use(verifyToken);
 
+router.get("/get-event-userId", controllers.getEventByUserId);
+
 router.delete("/delete-event", isAdmin, controllers.deleteEvent);
 
 router.put("/cancel-event/:eventId", isCreator, controllers.cancelEvent);
