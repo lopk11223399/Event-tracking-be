@@ -48,7 +48,7 @@ export const register = ({ username, password, email, name }) => {
         : null;
       resolve({
         success: accessToken ? true : false,
-        message: accessToken ? "Đăng ký thành công" : "Đăng ký thất bại",
+        mess: accessToken ? "Đăng ký thành công" : "Đăng ký thất bại",
       });
       if (refreshToken) {
         await db.User.update(
@@ -94,7 +94,7 @@ export const login = ({ username, password }) => {
         : null;
       resolve({
         success: accessToken ? true : false,
-        message: accessToken
+        mess: accessToken
           ? "Đăng nhập thành công"
           : "Username hoặc password sai",
         // token: accessToken ? `Bearer ${accessToken}` : accessToken,
@@ -129,7 +129,7 @@ export const refreshToken = (refresh_token) =>
           (err) => {
             if (err)
               resolve({
-                err: 1,
+                success: 1,
                 mess: "Refresh token expired. Require login again!!",
               });
             else {
@@ -143,7 +143,7 @@ export const refreshToken = (refresh_token) =>
                 { expiresIn: "1d" }
               );
               resolve({
-                err: accessToken ? 0 : 1,
+                success: accessToken ? 0 : 1,
                 mess: accessToken ? "Ok" : "Fail to generate new access token",
                 // access_token: accessToken ? `Bearer ${accessToken}`: accessToken,
                 token: accessToken ? `${accessToken}` : accessToken,
@@ -168,7 +168,7 @@ export const resetPassword = (email) =>
       let newPassword = (Math.random() + 1).toString(36).substring(4);
       if (response === null) {
         resolve({
-          sucess: false,
+          success: false,
           mess: "Email is wrong",
         });
       } else {
@@ -179,7 +179,7 @@ export const resetPassword = (email) =>
           }
         );
         resolve({
-          sucess: true,
+          success: true,
           mess: "Please check Email!!",
           newPassword: newPassword,
         });

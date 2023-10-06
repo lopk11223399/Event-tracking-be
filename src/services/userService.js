@@ -20,8 +20,8 @@ export const createUserByAdmin = ({ username, password }) =>
         studentId: response[0].dataValues.id,
       });
       resolve({
-        err: response[1] ? 0 : 1,
-        message: response[1] ? "Create user success!!" : "username is exist",
+        success: response[1] ? 0 : 1,
+        mess: response[1] ? "Create user success!!" : "username is exist",
       });
     } catch (error) {
       reject(error);
@@ -65,8 +65,8 @@ export const getAllUsers = ({ page, limit, name, order, id, ...query }) => {
         ],
       });
       resolve({
-        err: response ? 0 : 1,
-        message: response ? "Got data" : "No data",
+        success: response ? 0 : 1,
+        mess: response ? "Got data" : "No data",
         response: response,
       });
     } catch (error) {
@@ -106,8 +106,8 @@ export const getUser = (userId) => {
         ],
       });
       resolve({
-        err: response ? true : false,
-        message: response ? "Got data" : "No data",
+        success: response ? true : false,
+        mess: response ? "Got data" : "No data",
         response: response,
       });
     } catch (error) {
@@ -152,8 +152,8 @@ export const updateUser = (body, userId, fileData) => {
         },
       });
       resolve({
-        err: response[0] > 0 && response1[0] > 0 ? 0 : 1,
-        message:
+        success: response[0] > 0 && response1[0] > 0 ? 0 : 1,
+        mess:
           response[0] > 0 && response1[0] > 0 ? "Update successfully" : "not",
       });
       if (fileData && !response[0] === 0)
@@ -180,8 +180,8 @@ export const updateInfoAdmin = (body, userId, fileData) => {
         where: { id: userId },
       });
       resolve({
-        err: response[0] > 0 ? 0 : 1,
-        message: response[0] > 0 ? "Update successfully" : "not",
+        success: response[0] > 0 ? 0 : 1,
+        mess: response[0] > 0 ? "Update successfully" : "not",
       });
     } catch (error) {
       reject(error);
@@ -199,8 +199,8 @@ export const deleteUserByAdmin = (userId) => {
         where: { id: userId },
       });
       resolve({
-        err: response ? 0 : 1,
-        message: response ? "Delete successfully" : "not",
+        success: response ? 0 : 1,
+        mess: response ? "Delete successfully" : "not",
       });
     } catch (error) {
       reject(error);
@@ -225,7 +225,7 @@ export const changePassword = (body, userId) =>
             )
         : "Password is wrong";
       resolve({
-        err: response1[0] > 0 ? true : false,
+        success: response1[0] > 0 ? true : false,
         mess: response1[0] > 0 ? "Changed password successfully" : response1,
       });
     } catch (e) {

@@ -9,10 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      eventId: {
-        type: Sequelize.INTEGER,
-      },
-      roomId: {
+      userId: {
         type: Sequelize.INTEGER,
       },
       response: {

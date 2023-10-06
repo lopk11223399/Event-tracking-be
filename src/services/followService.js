@@ -48,8 +48,8 @@ export const followEvent = (userId, eventId) => {
         });
         console.log(response);
         resolve({
-          err: response ? true : false,
-          message: response
+          success: response ? true : false,
+          mess: response
             ? "Đã hủy theo dõi sự kiện này"
             : "Đã xảy ra lỗi gì đó vui lòng thử lại",
         });
@@ -62,8 +62,8 @@ export const followEvent = (userId, eventId) => {
           },
         });
         resolve({
-          err: response[1] ? true : false,
-          message: response[1]
+          success: response[1] ? true : false,
+          mess: response[1]
             ? "Đã theo dõi sự kiện này thành công"
             : "Đã xảy ra lỗi gì đó vui lòng thử lại",
         });

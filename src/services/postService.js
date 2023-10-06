@@ -33,8 +33,8 @@ export const createEvent = (body, id, fileData) => {
         "Asia/Ho_Chi_Minh"
       );
       resolve({
-        err: response ? true : false,
-        message: response ? "Created event successfull" : "not",
+        success: response ? true : false,
+        mess: response ? "Created event successfull" : "not",
         response: response,
       });
     } catch (error) {
@@ -51,8 +51,8 @@ export const updateEvent = (body, eventId) => {
         where: { id: eventId },
       });
       resolve({
-        err: response[0] > 0 ? true : false,
-        message: response[0] > 0 ? "Update event successfull" : "not",
+        success: response[0] > 0 ? true : false,
+        mess: response[0] > 0 ? "Update event successfull" : "not",
       });
     } catch (error) {
       reject(error);
@@ -89,11 +89,12 @@ export const getAllEvent = ({
       });
 
       resolve({
-        err: response ? true : false,
-        message: response ? "Get data success" : "Get data failure",
+        success: response ? true : false,
+        mess: response ? "Get data success" : "Get data failure",
         response: response,
       });
     } catch (error) {
+      console.log(error);
       reject(error);
     }
   });
@@ -211,8 +212,6 @@ export const getEvent = (eventId) => {
             as: "commentEvent",
             attributes: ["id", "name", "email", "avatar"],
           },
-          // Need fix here
-          // ---------------------------------------
           {
             model: db.OfflineEvent,
             as: "offlineEvent",
@@ -221,7 +220,6 @@ export const getEvent = (eventId) => {
             model: db.OnlineEvent,
             as: "onlineEvent",
           },
-          // -------------------------------------
         ],
         attributes: {
           exclude: [
@@ -233,6 +231,12 @@ export const getEvent = (eventId) => {
           ],
         },
       });
+      response1[0].dataValues.onlineEvent.length === 0
+        ? (response1[0].dataValues.onlineEvent = null)
+        : response1[0].dataValues.onlineEvent;
+      response1[0].dataValues.offlineEvent.length === 0
+        ? (response1[0].dataValues.offlineEvent = null)
+        : response1[0].dataValues.offlineEvent;
       response1[0].dataValues.followers.forEach((follower) => {
         delete follower.dataValues.ListEventFollow;
       });
@@ -422,6 +426,12 @@ export const getEventByUserId = (userId) => {
             "roleId",
           ],
         },
+        include: [
+          {
+            model: db.ListEventFollow,
+            as: "followData",
+          },
+        ],
       });
       resolve({
         success: response ? true : false,

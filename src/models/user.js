@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       //   as: "followerData",
       // });
       User.hasMany(models.Event, {
-        foreignKey: "creatorId",
+        foreignKey: "authorId",
         as: "eventData",
       });
       User.belongsToMany(models.Event, {
@@ -43,6 +43,10 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.belongsToMany(models.Event, {
         through: "Feedback",
+      });
+      User.hasMany(models.ListEventFollow, {
+        foreignKey: "userId",
+        as: "followData",
       });
     }
   }

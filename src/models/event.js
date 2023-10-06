@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "id",
       });
       Event.belongsTo(models.User, {
-        foreignKey: "creatorId",
+        foreignKey: "authorId",
         as: "author",
       });
       Event.hasMany(models.ListEventFollow, {

@@ -16,7 +16,7 @@ export const joinEvent = (userId, eventId, roomId) => {
         });
         resolve({
           success: response ? true : false,
-          message: response
+          mess: response
             ? "Đã hủy than gia sự kiện này"
             : "Đã xảy ra lỗi gì đó vui lòng thử lại",
         });
@@ -28,7 +28,7 @@ export const joinEvent = (userId, eventId, roomId) => {
         });
         resolve({
           success: response ? true : false,
-          message: response
+          mess: response
             ? "Đã tham gia sự kiện thành công"
             : "Đã có lỗi gì đó xảy ra",
         });
