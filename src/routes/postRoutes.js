@@ -2,7 +2,7 @@ import express from "express";
 import * as controllers from "../controllers";
 import { isCreator, isAdmin } from "../middlewares/verify_roles";
 import verifyToken from "../middlewares/verify_token";
-import { uploadEvent } from "../middlewares/uploader";
+import { uploadEvent, uploadQr } from "../middlewares/uploader";
 const router = express.Router();
 
 router.get("/get-event-hot", controllers.filterEventHot);
@@ -12,6 +12,8 @@ router.get("/detail-event/:id", controllers.getEvent);
 router.get("/get-all-follower/:eventId", controllers.getAllFollower);
 
 router.use(verifyToken);
+
+router.post("/scanQr", controllers.scanQr);
 
 router.get("/get-event-userId", controllers.getEventByUserId);
 

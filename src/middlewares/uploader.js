@@ -25,10 +25,20 @@ const userStorage = new CloudinaryStorage({
   },
 });
 
+const qrStorage = new CloudinaryStorage({
+  cloudinary,
+  allowedFormats: ["jpg", "png"],
+  params: {
+    folder: "TE_qr",
+  },
+});
+
 const uploadEvent = multer({ storage: eventStorage });
 const uploadUser = multer({ storage: userStorage });
+const uploadQr = multer({ storage: qrStorage });
 
 module.exports = {
   uploadEvent,
   uploadUser,
+  uploadQr,
 };

@@ -2,6 +2,31 @@ import db, { sequelize } from "../models";
 const cloudinary = require("cloudinary").v2;
 import { Op } from "sequelize";
 import { CronJob } from "cron";
+const qrCode = require("qrcode");
+
+export const scanQr = (userId) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.User.findOne({
+        where: { id: userId },
+        attributes: ["username"],
+      });
+
+      qrCode.toDataURL(
+        JSON.stringify(response.dataValues),
+        function (err, url) {
+          resolve({
+            err: url ? 0 : 1,
+            message: url ? "Got" : "User not found",
+            data: response.dataValues,
+            url: url,
+          });
+        }
+      );
+    } catch (e) {
+      reject(e);
+    }
+  });
 
 export const createEvent = (body, id, fileData) => {
   return new Promise(async (resolve, reject) => {
@@ -10,17 +35,8 @@ export const createEvent = (body, id, fileData) => {
         body.image = fileData?.path;
         body.fileNameImage = fileData?.filename;
       }
-      const response = await db.Event.create({
-        title: body.title,
-        authorId: id,
-        startDate: body.startDate,
-        finishDate: body.finishDate,
-        image: body.image,
-        description: body.description,
-        typeEvent: body.typeEvent,
-        status: body.status,
-        fileNameImage: body.fileNameImage,
-      });
+      const response = await db.Event.create(body);
+
       if (fileData && !response[0] === 0)
         cloudinary.uploader.destroy(fileData.filename);
       const job = new CronJob(
@@ -44,6 +60,22 @@ export const createEvent = (body, id, fileData) => {
   });
 };
 
+// Để thằng createEvent gọi lại
+export const createRoom = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.OfflineEvent.create(body);
+      resolve({
+        success: response ? true : false,
+        mess: response ? "Tạo phòng thành công" : "Đã có lỗi gì đó xảy ra",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+// not finish
 export const updateEvent = (body, eventId) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -273,7 +305,6 @@ export const getEvent = (eventId) => {
         response1: response1,
       });
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });

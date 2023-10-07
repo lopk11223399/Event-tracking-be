@@ -18,7 +18,7 @@ export const insertDataUser = () =>
           name: student.fullName,
           birthDate: formatDate(student.birthDate),
           username: student.slug,
-          gmail: student.slug + "@dtu.edu.vn",
+          email: student.slug + "@dtu.edu.vn",
           password: hashPassword("12345678"),
           gender: student.gender === "Nam" ? false : true,
         });

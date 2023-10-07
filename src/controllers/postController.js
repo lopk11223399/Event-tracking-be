@@ -10,7 +10,7 @@ import {
   description,
   typeEvent,
   status,
-  categoryEvent,
+  location,
 } from "../helpers/joi_schema";
 
 export const createEvent = async (req, res) => {
@@ -26,11 +26,13 @@ export const createEvent = async (req, res) => {
         description,
         typeEvent,
         status,
+        location,
       })
       .validate({
         ...req.body,
         image: fileData?.path,
       });
+    console.log(fileData);
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
       return badRequest(error.details[0].message, res);
@@ -114,6 +116,16 @@ export const getEventByUserId = async (req, res) => {
   try {
     const { id } = req.user;
     const response = await services.getEventByUserId(id);
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};
+
+export const scanQr = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const response = await services.scanQr(id);
     return res.status(200).json(response);
   } catch (error) {
     return internalServerError(res);

@@ -22,8 +22,8 @@ export const startDate = joi.string().required();
 export const finishDate = joi.string().required();
 export const image = joi.string().required();
 export const description = joi.string().required();
-export const typeEvent = joi.number().required();
 export const status = joi.number().required();
-export const categoryEvent = joi.number().required();
+export const typeEvent = joi.boolean().required();
+export const location = joi.string();
 
 export const comment = joi.string().required().min(8);
