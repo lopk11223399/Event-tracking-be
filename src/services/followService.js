@@ -46,7 +46,6 @@ export const followEvent = (userId, eventId) => {
         const response = await db.ListEventFollow.destroy({
           where: { [Op.and]: [{ UserId: userId }, { EventId: eventId }] },
         });
-        console.log(response);
         resolve({
           success: response ? true : false,
           mess: response
@@ -55,15 +54,16 @@ export const followEvent = (userId, eventId) => {
         });
       } else {
         const response = await db.ListEventFollow.findOrCreate({
-          where: { EventId: eventId },
+          where: { [Op.and]: [{ UserId: userId }, { EventId: eventId }] },
           defaults: {
             UserId: userId,
             EventId: eventId,
           },
         });
+        console.log(response);
         resolve({
-          success: response[1] ? true : false,
-          mess: response[1]
+          success: response[0] ? true : false,
+          mess: response[0]
             ? "Đã theo dõi sự kiện này thành công"
             : "Đã xảy ra lỗi gì đó vui lòng thử lại",
         });

@@ -7,15 +7,13 @@ const router = express.Router();
 
 router.get("/get-event-hot", controllers.filterEventHot);
 router.get("/get-all-event", controllers.getAllEvent);
-router.get("/get-event-today", controllers.filterEventToday);
+router.get("/get-event-today", controllers.filterEventToday); //gop vs thang getAllEvent
 router.get("/detail-event/:id", controllers.getEvent);
 router.get("/get-all-follower/:eventId", controllers.getAllFollower);
 
 router.use(verifyToken);
 
 router.post("/scanQr", controllers.scanQr);
-
-router.get("/get-event-userId", controllers.getEventByUserId);
 
 router.delete("/delete-event", isAdmin, controllers.deleteEvent);
 

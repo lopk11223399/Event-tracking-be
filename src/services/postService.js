@@ -103,7 +103,7 @@ export const getAllEvent = ({
 }) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const queries = { raw: true, nest: true };
+      const queries = { raw: false, nest: true };
       const offset = !page || +page <= 1 ? 0 : +page - 1;
       const fLimit = +limit || +process.env.LIMIT_USER;
       queries.offset = offset * fLimit;
@@ -118,8 +118,73 @@ export const getAllEvent = ({
       const response = await db.Event.findAll({
         where: query,
         ...queries,
+        include: [
+          {
+            model: db.User,
+            as: "author",
+            attributes: ["id", "name", "email", "avatar"],
+          },
+          {
+            model: db.User,
+            as: "followers",
+            attributes: ["id", "name", "email", "avatar"],
+          },
+          {
+            model: db.User,
+            as: "userJoined",
+            attributes: ["id", "name", "email", "avatar"],
+          },
+          {
+            model: db.Status,
+            as: "statusEvent",
+            attributes: ["id", "statusName"],
+          },
+          {
+            model: db.User,
+            as: "commentEvent",
+            attributes: ["id", "name", "email", "avatar"],
+          },
+          {
+            model: db.OfflineEvent,
+            as: "offlineEvent",
+          },
+          {
+            model: db.OnlineEvent,
+            as: "onlineEvent",
+          },
+        ],
+        attributes: {
+          exclude: ["fileNameImage", "fileNameQr"],
+        },
       });
 
+      response[0].dataValues.onlineEvent.length === 0
+        ? (response[0].dataValues.onlineEvent = null)
+        : response[0].dataValues.onlineEvent;
+      response[0].dataValues.offlineEvent.length === 0
+        ? (response[0].dataValues.offlineEvent = null)
+        : response[0].dataValues.offlineEvent;
+
+      response[0].dataValues.followers.forEach((follower) => {
+        delete follower.dataValues.ListEventFollow;
+      });
+
+      response[0].dataValues.commentEvent.forEach((comment) => {
+        const listComment = comment.dataValues.Comment;
+
+        comment.dataValues.comment = listComment.comment;
+        comment.dataValues.createdAt = listComment.createdAt;
+
+        delete comment.dataValues.Comment;
+      });
+
+      response[0].dataValues.userJoined.forEach((user) => {
+        const userJoined = user.dataValues.ListPeopleJoin;
+
+        user.dataValues.roomId = userJoined.roomId;
+
+        delete user.dataValues.ListPeopleJoin;
+      });
       resolve({
         success: response ? true : false,
         mess: response ? "Get data success" : "Get data failure",
@@ -269,6 +334,7 @@ export const getEvent = (eventId) => {
       response1[0].dataValues.offlineEvent.length === 0
         ? (response1[0].dataValues.offlineEvent = null)
         : response1[0].dataValues.offlineEvent;
+
       response1[0].dataValues.followers.forEach((follower) => {
         delete follower.dataValues.ListEventFollow;
       });
@@ -437,40 +503,6 @@ export const deleteEvent = (eventId) => {
         mess: deleteEvent ? "Xóa thành công" : "Có lỗi gì đó đã xảy ra",
       });
     } catch (error) {
-      reject(error);
-    }
-  });
-};
-
-// Chưa xong
-export const getEventByUserId = (userId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await db.User.findAll({
-        where: { id: userId },
-        attributes: {
-          exclude: [
-            "refresh_token",
-            "createdAt",
-            "updatedAt",
-            "fileName",
-            "roleId",
-          ],
-        },
-        include: [
-          {
-            model: db.ListEventFollow,
-            as: "followData",
-          },
-        ],
-      });
-      resolve({
-        success: response ? true : false,
-        mess: response ? "Get curent user success" : "Get curent user failure",
-        response: response,
-      });
-    } catch (error) {
-      console.log(error);
       reject(error);
     }
   });

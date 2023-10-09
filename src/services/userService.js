@@ -101,7 +101,11 @@ export const getUser = (userId) => {
           {
             model: db.Faculty,
             as: "facultyData",
-            attributes: ["id", "faculty_code", "nameFaculty"],
+            attributes: ["id", "nameFaculty"],
+          },
+          {
+            model: db.Event,
+            as: "eventFollowed",
           },
         ],
       });
