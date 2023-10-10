@@ -16,10 +16,10 @@ module.exports = {
         type: Sequelize.STRING,
       },
       startDate: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATE,
       },
       finishDate: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATE,
       },
       image: {
         type: Sequelize.STRING,

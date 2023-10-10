@@ -3,6 +3,7 @@ const cloudinary = require("cloudinary").v2;
 import { Op } from "sequelize";
 import { CronJob } from "cron";
 const qrCode = require("qrcode");
+import moment from "moment";
 
 export const scanQr = (userId) =>
   new Promise(async (resolve, reject) => {
@@ -109,8 +110,11 @@ export const getAllEvent = ({
       queries.offset = offset * fLimit;
       queries.limit = fLimit;
       if (order) queries.order = [order];
+      if (date) {
+        query.startDate = { [Op.lte]: moment(date) };
+        query.finishDate = { [Op.gte]: moment(date) };
+      }
       if (title) query.title = { [Op.substring]: title };
-      if (date) query.startDate = { [Op.endsWith]: date };
       if (status) {
         let statusess = status.map((item) => Number(item));
         query.status = { [Op.or]: statusess };
@@ -154,7 +158,7 @@ export const getAllEvent = ({
           },
         ],
         attributes: {
-          exclude: ["fileNameImage", "fileNameQr"],
+          exclude: ["fileNameImage", "fileNameQr", "updatedAt"],
         },
       });
 

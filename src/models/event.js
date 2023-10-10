@@ -59,8 +59,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       authorId: DataTypes.INTEGER,
       title: DataTypes.STRING,
-      startDate: DataTypes.STRING,
-      finishDate: DataTypes.STRING,
+      startDate: DataTypes.DATE,
+      finishDate: DataTypes.DATE,
       image: DataTypes.STRING,
       description: DataTypes.TEXT,
       typeEvent: DataTypes.BOOLEAN,
