@@ -5,9 +5,7 @@ import verifyToken from "../middlewares/verify_token";
 import { uploadEvent, uploadQr } from "../middlewares/uploader";
 const router = express.Router();
 
-router.get("/get-event-hot", controllers.filterEventHot);
 router.get("/get-all-event", controllers.getAllEvent);
-router.get("/get-event-today", controllers.filterEventToday); //gop vs thang getAllEvent
 router.get("/detail-event/:id", controllers.getEvent);
 router.get("/get-all-follower/:eventId", controllers.getAllFollower);
 

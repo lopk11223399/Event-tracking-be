@@ -63,24 +63,6 @@ export const getAllEvent = async (req, res) => {
   }
 };
 
-export const filterEventHot = async (req, res) => {
-  try {
-    const response = await services.filterEventHot();
-    return res.status(200).json(response);
-  } catch (error) {
-    return internalServerError(res);
-  }
-};
-
-export const filterEventToday = async (req, res) => {
-  try {
-    const response = await services.filterEventToday();
-    return res.status(200).json(response);
-  } catch (error) {
-    return internalServerError(res);
-  }
-};
-
 export const getEvent = async (req, res) => {
   try {
     const { id } = req.params;

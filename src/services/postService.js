@@ -100,6 +100,7 @@ export const getAllEvent = ({
   title,
   status,
   date,
+  hot,
   ...query
 }) => {
   return new Promise(async (resolve, reject) => {
@@ -118,6 +119,36 @@ export const getAllEvent = ({
       if (status) {
         let statusess = status.map((item) => Number(item));
         query.status = { [Op.or]: statusess };
+      }
+      if (hot) {
+        const response = await db.ListPeopleJoin.findAll({
+          attributes: [
+            "eventId",
+            [sequelize.fn("COUNT", "*"), "total_participants"],
+          ],
+          group: ["eventId"],
+          order: [["total_participants", "DESC"]],
+          include: [
+            {
+              model: db.Event,
+              as: "eventData",
+              attributes: [
+                "id",
+                "authorId",
+                "title",
+                "image",
+                "startDate",
+                "finishDate",
+                "status",
+              ],
+            },
+          ],
+        });
+        resolve({
+          success: response ? true : false,
+          mess: response ? "Lấy dữ liệu thành công" : "Có lỗi",
+          response: response,
+        });
       }
       const response = await db.Event.findAll({
         where: query,
@@ -162,112 +193,42 @@ export const getAllEvent = ({
         },
       });
 
-      response[0].dataValues.onlineEvent.length === 0
-        ? (response[0].dataValues.onlineEvent = null)
-        : response[0].dataValues.onlineEvent;
-      response[0].dataValues.offlineEvent.length === 0
-        ? (response[0].dataValues.offlineEvent = null)
-        : response[0].dataValues.offlineEvent;
+      response.forEach((event) => {
+        event.dataValues.onlineEvent.length === 0
+          ? (event.dataValues.onlineEvent = null)
+          : event.dataValues.onlineEvent;
 
-      response[0].dataValues.followers.forEach((follower) => {
-        delete follower.dataValues.ListEventFollow;
+        event.dataValues.offlineEvent.length === 0
+          ? (event.dataValues.offlineEvent = null)
+          : event.dataValues.offlineEvent;
       });
 
-      response[0].dataValues.commentEvent.forEach((comment) => {
-        const listComment = comment.dataValues.Comment;
-
-        comment.dataValues.comment = listComment.comment;
-        comment.dataValues.createdAt = listComment.createdAt;
-
-        delete comment.dataValues.Comment;
+      response.forEach((event) => {
+        event.dataValues.followers.forEach((follower) => {
+          delete follower.dataValues.ListEventFollow;
+        });
       });
 
-      response[0].dataValues.userJoined.forEach((user) => {
-        const userJoined = user.dataValues.ListPeopleJoin;
+      response.forEach((event) => {
+        event.dataValues.commentEvent.forEach((comment) => {
+          const listComment = comment.dataValues.Comment;
+          comment.dataValues.comment = listComment.comment;
+          comment.dataValues.createdAt = listComment.createdAt;
+          delete comment.dataValues.Comment;
+        });
+      });
 
-        user.dataValues.roomId = userJoined.roomId;
+      response.forEach((event) => {
+        event.dataValues.userJoined.forEach((user) => {
+          const userJoined = user.dataValues.ListPeopleJoin;
+          user.dataValues.roomId = userJoined.roomId;
 
-        delete user.dataValues.ListPeopleJoin;
+          delete user.dataValues.ListPeopleJoin;
+        });
       });
       resolve({
         success: response ? true : false,
         mess: response ? "Get data success" : "Get data failure",
-        response: response,
-      });
-    } catch (error) {
-      console.log(error);
-      reject(error);
-    }
-  });
-};
-
-export const filterEventHot = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await db.ListPeopleJoin.findAll({
-        attributes: [
-          "eventId",
-          [sequelize.fn("COUNT", "*"), "total_participants"],
-        ],
-        group: ["eventId"],
-        order: [["total_participants", "DESC"]],
-        include: [
-          {
-            model: db.Event,
-            as: "eventData",
-            attributes: [
-              "id",
-              "authorId",
-              "title",
-              "image",
-              "startDate",
-              "finishDate",
-              "status",
-            ],
-          },
-        ],
-      });
-      resolve({
-        success: response ? true : false,
-        mess: response ? "Lấy dữ liệu thành công" : "Có lỗi",
-        response: response,
-      });
-    } catch (error) {
-      console.log(error);
-      reject(error);
-    }
-  });
-};
-
-export const filterEventToday = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      var d = new Date();
-      const date =
-        ("0" + d.getDate()).slice(-2) +
-        "-" +
-        ("0" + (d.getMonth() + 1)).slice(-2) +
-        "-" +
-        d.getFullYear();
-      const response = await db.Event.findAndCountAll({
-        where: {
-          startDate: {
-            [Op.startsWith]: date,
-          },
-        },
-        attributes: [
-          "id",
-          "authorId",
-          "title",
-          "startDate",
-          "finishDate",
-          "status",
-        ],
-      });
-
-      resolve({
-        success: 1,
-        mess: 2,
         response: response,
       });
     } catch (error) {
