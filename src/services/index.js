@@ -6,3 +6,4 @@ export * from "./notificationService";
 export * from "./followService";
 export * from "./insert";
 export * from "./joinEventService";
+export * from "./facultyService";

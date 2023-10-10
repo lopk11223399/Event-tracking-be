@@ -27,3 +27,5 @@ export const typeEvent = joi.boolean().required();
 export const location = joi.string();
 
 export const comment = joi.string().required().min(8);
+
+export const nameFaculty = joi.string().required();

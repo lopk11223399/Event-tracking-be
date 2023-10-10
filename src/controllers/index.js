@@ -6,3 +6,4 @@ export * from "./notificationController";
 export * from "./followController";
 export * from "./insert";
 export * from "./jointEventController";
+export * from "./facultyController";

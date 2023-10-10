@@ -6,6 +6,7 @@ import notification from "./notificationRoutes";
 import follow from "./followRoutes";
 import insert from "./insert";
 import joinEvent from "./joinEventRoutes";
+import faculty from "./facultyRoutes";
 import { notFound } from "../middlewares/handle_errors";
 
 const initRoutes = (app) => {
@@ -17,6 +18,7 @@ const initRoutes = (app) => {
   app.use("/api/v1/joinEvent", joinEvent);
   app.use("/api/v1/follow", follow);
   app.use("/api/v1/comment", comment);
+  app.use("/api/v1/faculty", faculty);
 
   app.use(notFound);
 };
