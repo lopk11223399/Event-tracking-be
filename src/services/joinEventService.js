@@ -34,7 +34,6 @@ export const joinEvent = (userId, eventId, roomId) => {
         });
       }
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });
@@ -56,7 +55,6 @@ export const updateRoom = (userId, eventId, roomId) => {
         mess: response[0] ? "Cập nhật thành công" : "Đã có lỗi gì đó xảy ra",
       });
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });

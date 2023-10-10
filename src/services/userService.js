@@ -38,7 +38,6 @@ export const getAllUsers = ({ page, limit, name, order, id, ...query }) => {
       queries.limit = fLimit;
       if (order) queries.order = [order];
       if (name) query.name = { [Op.substring]: name };
-      console.log(queries);
       const response = await db.User.findAndCountAll({
         where: query,
         ...queries,
@@ -115,7 +114,6 @@ export const getUser = (userId) => {
         response: response,
       });
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });

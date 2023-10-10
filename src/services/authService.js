@@ -164,7 +164,6 @@ export const resetPassword = (email) =>
       const response = await db.User.findOne({
         where: { email: email },
       });
-      console.log(response);
       let newPassword = (Math.random() + 1).toString(36).substring(4);
       if (response === null) {
         resolve({

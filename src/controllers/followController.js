@@ -11,6 +11,16 @@ export const getAllFollower = async (req, res) => {
   }
 };
 
+export const getAllFollowerByUserId = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const response = await services.getAllFollowerByUserId(id);
+    return res.status(200).json(response);
+  } catch (error) {
+    return internalServerError(res);
+  }
+};
+
 export const followEvent = async (req, res) => {
   try {
     const { id } = req.user;

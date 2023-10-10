@@ -7,6 +7,7 @@ const router = express.Router();
 router.get("/get-follow/:eventId", controllers.getAllFollower);
 
 router.use(verifyToken);
+router.get("/get-follow-userId/", controllers.getAllFollowerByUserId);
 router.post("/:eventId", controllers.followEvent);
 
 module.exports = router;

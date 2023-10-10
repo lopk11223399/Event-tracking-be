@@ -232,7 +232,6 @@ export const getAllEvent = ({
         response: response,
       });
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });
@@ -405,7 +404,6 @@ export const cancelEvent = (userId, eventId) => {
         mess: response ? "Hủy thành công" : "Đã xảy ra lỗi gì đó",
       });
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });

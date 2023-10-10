@@ -30,7 +30,24 @@ export const getAllFollower = (eventId) => {
         response: response,
       });
     } catch (error) {
-      console.log(error);
+      reject(error);
+    }
+  });
+};
+
+export const getAllFollowerByUserId = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.ListEventFollow.findAll({
+        where: { userId: userId },
+        attributes: ["eventId", "userId"],
+      });
+      resolve({
+        err: response ? true : false,
+        message: response ? "Get data success" : "Get data failure",
+        response: response,
+      });
+    } catch (error) {
       reject(error);
     }
   });
@@ -60,7 +77,6 @@ export const followEvent = (userId, eventId) => {
             EventId: eventId,
           },
         });
-        console.log(response);
         resolve({
           success: response[0] ? true : false,
           mess: response[0]
@@ -69,7 +85,6 @@ export const followEvent = (userId, eventId) => {
         });
       }
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });

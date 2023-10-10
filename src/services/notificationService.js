@@ -14,7 +14,6 @@ export const getNotifications = (userId) => {
         response: response,
       });
     } catch (error) {
-      console.log(error);
       reject(error);
     }
   });

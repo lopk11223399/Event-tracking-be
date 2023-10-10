@@ -4,7 +4,6 @@ import db from "../models";
 export const postComment = (body, id, eventId) =>
   new Promise(async (resolve, reject) => {
     try {
-      console.log(body, id, eventId);
       const response = await db.Comment.create({
         UserId: id,
         EventId: eventId,
@@ -81,7 +80,6 @@ export const responseComment = (body, id, commentId) =>
           : "Đã xảy ra một lỗi gì đó vui lòng thử lại",
       });
     } catch (e) {
-      console.log(e);
       reject(e);
     }
   });

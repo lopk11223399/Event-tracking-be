@@ -32,7 +32,6 @@ export const createEvent = async (req, res) => {
         ...req.body,
         image: fileData?.path,
       });
-    console.log(fileData);
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
       return badRequest(error.details[0].message, res);
