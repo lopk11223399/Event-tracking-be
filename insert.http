@@ -1,0 +1,14 @@
+### send data user
+GET http://localhost:3000/api/v1/insert
+
+### send data event
+GET http://localhost:3000/api/v1/insert/event
+
+### get data event
+GET http://localhost:3000/api/v1/post/get-all-event?limit=5&page=1&hot
+
+### get detail event
+GET http://localhost:3000/api/v1/post/detail-event/30
+
+### get followed event
+GET http://localhost:3000/api/v1/post/get-all-follower/1

@@ -71,7 +71,19 @@ export const login = ({ username, password }) => {
     try {
       const response = await db.User.findOne({
         where: { username },
-        raw: true,
+        include: [
+          {
+            model: db.Student,
+            as: "studentData",
+            attributes: [
+              "studentId",
+              "classCode",
+              "program",
+              "studentCode",
+              "point",
+            ],
+          },
+        ],
       });
       const isChecked =
         response && bcrypt.compareSync(password, response.password);
