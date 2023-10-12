@@ -1,9 +1,9 @@
-import express from "express";
-import * as controllers from "../controllers";
+import express from 'express'
+import * as controllers from '../controllers'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", controllers.insertDataUser);
-router.get("/event", controllers.insertDataEvent);
+router.get('/', controllers.insertDataUser)
+router.get('/event', controllers.insertDataEvent)
 
-module.exports = router;
+module.exports = router
