@@ -10,10 +10,10 @@ export const getAllFollower = async (req, res) => {
   }
 };
 
-export const getAllFollowerByUserId = async (req, res) => {
+export const getAllFollowByUserId = async (req, res) => {
   try {
     const { id } = req.user;
-    const response = await services.getAllFollowerByUserId(id);
+    const response = await services.getAllFollowByUserId(id, req.query);
     return res.status(200).json(response);
   } catch (error) {
     console.log(error);

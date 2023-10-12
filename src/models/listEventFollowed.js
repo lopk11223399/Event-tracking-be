@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       ListEventFollow.hasOne(models.Event, {
         foreignKey: "id",
       });
+      ListEventFollow.belongsTo(models.Event, {
+        foreignKey: "eventId",
+        as: "eventData",
+      });
     }
   }
   ListEventFollow.init(

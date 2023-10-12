@@ -35,12 +35,49 @@ export const getAllFollower = (eventId) => {
   });
 };
 
-export const getAllFollowerByUserId = (userId) => {
+export const getAllFollowByUserId = (
+  userId,
+  { order, page, limit, ...query }
+) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const queries = { raw: false, nest: true };
+      const offset = !page || +page <= 1 ? 0 : +page - 1;
+      const fLimit = +limit || +process.env.LIMIT_USER;
+      queries.offset = offset * fLimit;
+      queries.limit = fLimit;
+      if (order) queries.order = [order];
       const response = await db.ListEventFollow.findAll({
         where: { userId: userId },
-        attributes: ["eventId", "userId"],
+        ...queries,
+        attributes: {
+          exclude: [
+            "userId",
+            "eventId",
+            "createdAt",
+            "updatedAt",
+            "EventId",
+            "UserId",
+          ],
+        },
+        include: [
+          {
+            model: db.Event,
+            as: "eventData",
+            attributes: [
+              "id",
+              "authorId",
+              "title",
+              "description",
+              "image",
+              "location",
+              "startDate",
+              "finishDate",
+              "status",
+              "limitParticipant",
+            ],
+          },
+        ],
       });
       resolve({
         err: response ? true : false,
