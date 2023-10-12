@@ -8,6 +8,6 @@ export const getNotifications = async (req, res) => {
     const response = await services.getNotifications(id);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };

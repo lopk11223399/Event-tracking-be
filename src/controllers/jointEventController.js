@@ -1,5 +1,4 @@
 import * as services from "../services";
-import { internalServerError, badRequest } from "../middlewares/handle_errors";
 
 export const joinEvent = async (req, res) => {
   try {
@@ -8,7 +7,7 @@ export const joinEvent = async (req, res) => {
     const response = await services.joinEvent(id, eventId, req.body.roomId);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -19,6 +18,6 @@ export const updateRoom = async (req, res) => {
     const response = await services.updateRoom(id, eventId, req.body.roomId);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };

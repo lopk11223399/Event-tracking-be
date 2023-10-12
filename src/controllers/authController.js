@@ -1,6 +1,5 @@
 import joi from "joi";
 import * as services from "../services";
-// import { internalServerError, badRequest } from "../middlewares/handle_errors";
 import {
   username,
   password,

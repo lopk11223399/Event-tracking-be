@@ -1,6 +1,5 @@
 import joi from "joi";
 import * as services from "../services";
-import { internalServerError, badRequest } from "../middlewares/handle_errors";
 const cloudinary = require("cloudinary").v2;
 import {
   title,
@@ -34,12 +33,15 @@ export const createEvent = async (req, res) => {
       });
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
-      return badRequest(error.details[0].message, res);
+      return res.status(200).json({
+        success: false,
+        mess: error.details[0]?.message,
+      });
     }
     const response = await services.createEvent(req.body, id, fileData);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -49,7 +51,7 @@ export const updateEvent = async (req, res) => {
     const response = await services.updateEvent(req.body, id);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -58,7 +60,7 @@ export const getAllEvent = async (req, res) => {
     const response = await services.getAllEvent(req.query);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -68,7 +70,7 @@ export const getEvent = async (req, res) => {
     const response = await services.getEvent(id);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -79,7 +81,7 @@ export const cancelEvent = async (req, res) => {
     const response = await services.cancelEvent(id, Number(eventId));
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -89,7 +91,7 @@ export const deleteEvent = async (req, res) => {
     const response = await services.deleteEvent(Number(eventId));
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -99,7 +101,7 @@ export const getEventByUserId = async (req, res) => {
     const response = await services.getEventByUserId(id);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -109,6 +111,6 @@ export const scanQr = async (req, res) => {
     const response = await services.scanQr(id);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };

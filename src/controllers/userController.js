@@ -1,6 +1,5 @@
 import joi from "joi";
 import * as services from "../services";
-import { internalServerError, badRequest } from "../middlewares/handle_errors";
 import {
   username,
   password,
@@ -11,7 +10,6 @@ import {
   address,
   phone,
   avatar,
-  isActive,
   classCode,
   program,
   studentCode,
@@ -23,12 +21,15 @@ export const createUserByAdmin = async (req, res) => {
   try {
     const { error } = joi.object({ username, password }).validate(req.body);
     if (error) {
-      return badRequest(error.details[0]?.message, res);
+      return res.status(200).json({
+        success: false,
+        mess: error.details[0]?.message,
+      });
     }
     const response = await services.createUserByAdmin(req.body);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -37,7 +38,7 @@ export const getAllUsers = async (req, res) => {
     const response = await services.getAllUsers(req.query);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -47,7 +48,7 @@ export const getUser = async (req, res) => {
     const response = await services.getUser(id);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -75,12 +76,15 @@ export const updateUser = async (req, res) => {
       });
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
-      return badRequest(error.details[0].message, res);
+      return res.status(200).json({
+        success: false,
+        mess: error.details[0]?.message,
+      });
     }
     const response = await services.updateUser(req.body, id, fileData);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -104,12 +108,15 @@ export const updateInfoAdmin = async (req, res) => {
       });
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
-      return badRequest(error.details[0].message, res);
+      return res.status(200).json({
+        success: false,
+        mess: error.details[0]?.message,
+      });
     }
     const response = await services.updateInfoAdmin(req.body, id, fileData);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -119,7 +126,7 @@ export const deleteUserByAdmin = async (req, res) => {
     const response = await services.deleteUserByAdmin(id);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
 
@@ -129,6 +136,6 @@ export const changePassword = async (req, res) => {
     const response = await services.changePassword(req.body, id);
     return res.status(200).json(response);
   } catch (error) {
-    return internalServerError(res);
+    console.log(error);
   }
 };
