@@ -5,30 +5,6 @@ import { CronJob } from "cron";
 const qrCode = require("qrcode");
 import moment from "moment";
 
-export const scanQr = (userId) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const response = await db.User.findOne({
-        where: { id: userId },
-        attributes: ["username"],
-      });
-
-      qrCode.toDataURL(
-        JSON.stringify(response.dataValues),
-        function (err, url) {
-          resolve({
-            err: url ? 0 : 1,
-            message: url ? "Got" : "User not found",
-            data: response.dataValues,
-            url: url,
-          });
-        }
-      );
-    } catch (e) {
-      reject(e);
-    }
-  });
-
 export const createEvent = (body, id, fileData) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -40,11 +16,24 @@ export const createEvent = (body, id, fileData) => {
         ...body,
         authorId: id,
       });
-
+      // qrCode.toDataURL(
+      //   JSON.stringify(response.dataValues),
+      //   function (err, url) {
+      //     resolve({
+      //       err: url ? 0 : 1,
+      //       message: url ? "Got" : "User not found",
+      //       data: response.dataValues,
+      //       url: url,
+      //     });
+      //   }
+      // );
+      const startDateTime = new Date(response.dataValues.startDate);
+      console.log(startDateTime);
+      console.log(moment(response.dataValues.startDate));
       if (fileData && !response[0] === 0)
         cloudinary.uploader.destroy(fileData.filename);
       const job = new CronJob(
-        "5 * * * * *",
+        startDateTime,
         function () {
           cancelEvent(id, response.id);
         },

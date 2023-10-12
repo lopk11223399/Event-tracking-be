@@ -6,7 +6,6 @@ import { uploadUser } from "../middlewares/uploader";
 const router = express.Router();
 
 router.use(verifyToken);
-// router.get("/get-event-userId", controllers.getEventByUserId);
 
 router.get("/get-current-user", controllers.getUser); // xóa eventDataJoined
 router.put("/update-user", uploadUser.single("avatar"), controllers.updateUser);

@@ -1,15 +1,21 @@
 import jwt, { TokenExpiredError } from "jsonwebtoken";
-import { notAuth } from "./handle_errors";
 
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization;
-  if (!token) return notAuth("Require login!!", res);
+  if (!token)
+    return res.status(200).json({ err: false, mess: "Require login" });
   const accessToken = token.split(" ")[1];
   jwt.verify(accessToken, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       const isChecked = err instanceof TokenExpiredError;
-      if (!isChecked) return notAuth("Access Token invalid", res, isChecked);
-      if (isChecked) return notAuth("Access Token expired", res, isChecked);
+      if (!isChecked)
+        return res
+          .status(200)
+          .json({ err: false, mess: "Access Token invalid" });
+      if (isChecked)
+        return res
+          .status(200)
+          .json({ err: false, mess: "Access Token expired" });
     }
     req.user = user;
     next();

@@ -68,11 +68,9 @@ module.exports = (sequelize, DataTypes) => {
       location: DataTypes.STRING,
       linkUrl: DataTypes.STRING,
       totalRate: DataTypes.FLOAT,
-      qrCode: DataTypes.STRING,
       addPoint: DataTypes.FLOAT,
       limitParticipant: DataTypes.INTEGER,
       fileNameImage: DataTypes.STRING,
-      fileNameQr: DataTypes.STRING,
     },
     {
       sequelize,

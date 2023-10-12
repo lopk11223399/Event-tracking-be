@@ -40,9 +40,6 @@ module.exports = {
       linkUrl: {
         type: Sequelize.STRING,
       },
-      qrCode: {
-        type: Sequelize.STRING,
-      },
       limitParticipant: {
         type: Sequelize.INTEGER,
       },
@@ -53,9 +50,6 @@ module.exports = {
         type: Sequelize.FLOAT,
       },
       fileNameImage: {
-        type: Sequelize.STRING,
-      },
-      fileNameQr: {
         type: Sequelize.STRING,
       },
       createdAt: {
