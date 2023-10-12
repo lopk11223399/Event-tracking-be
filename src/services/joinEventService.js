@@ -1,6 +1,7 @@
 import db, { sequelize } from "../models";
 import { Op, where } from "sequelize";
 
+// duyệt theo status
 export const joinEvent = (userId, eventId, roomId) => {
   return new Promise(async (resolve, reject) => {
     try {

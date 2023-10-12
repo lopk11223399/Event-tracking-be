@@ -48,6 +48,9 @@ export const insertDataEvent = () =>
           typeEvent: Math.random() > 0.5 ? 1 : 0,
           status: 1,
           authorId: [582, 583, 584, 585][Math.floor(Math.random() * 4)],
+          location:
+            "30, Đường Nguyễn Hữu Thọ, Phường Hòa Thuận Tây, Quận Hải Châu, Đà Nẵng, Việt Nam",
+          limitParticipant: 50,
         });
       });
       resolve("ok");

@@ -36,12 +36,15 @@ export const createEvent = (body, id, fileData) => {
         body.image = fileData?.path;
         body.fileNameImage = fileData?.filename;
       }
-      const response = await db.Event.create(body);
+      const response = await db.Event.create({
+        ...body,
+        authorId: id,
+      });
 
       if (fileData && !response[0] === 0)
         cloudinary.uploader.destroy(fileData.filename);
       const job = new CronJob(
-        "1 * * * * *",
+        "5 * * * * *",
         function () {
           cancelEvent(id, response.id);
         },
@@ -240,7 +243,7 @@ export const getAllEvent = ({
 export const getEvent = (eventId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response1 = await db.Event.findAll({
+      const response = await db.Event.findOne({
         where: { id: eventId },
         include: [
           {
@@ -292,47 +295,47 @@ export const getEvent = (eventId) => {
           ],
         },
       });
-      response1[0].dataValues.onlineEvent.length === 0
-        ? (response1[0].dataValues.onlineEvent = null)
-        : response1[0].dataValues.onlineEvent;
-      response1[0].dataValues.offlineEvent.length === 0
-        ? (response1[0].dataValues.offlineEvent = null)
-        : response1[0].dataValues.offlineEvent;
+      // response1[0].dataValues.onlineEvent.length === 0
+      //   ? (response1[0].dataValues.onlineEvent = null)
+      //   : response1[0].dataValues.onlineEvent;
+      // response1[0].dataValues.offlineEvent.length === 0
+      //   ? (response1[0].dataValues.offlineEvent = null)
+      //   : response1[0].dataValues.offlineEvent;
 
-      response1[0].dataValues.followers.forEach((follower) => {
-        delete follower.dataValues.ListEventFollow;
-      });
+      // response1[0].dataValues.followers.forEach((follower) => {
+      //   delete follower.dataValues.ListEventFollow;
+      // });
 
-      response1[0].dataValues.commentEvent.forEach((comment) => {
-        const listComment = comment.dataValues.Comment;
+      // response1[0].dataValues.commentEvent.forEach((comment) => {
+      //   const listComment = comment.dataValues.Comment;
 
-        comment.dataValues.comment = listComment.comment;
-        comment.dataValues.createdAt = listComment.createdAt;
+      //   comment.dataValues.comment = listComment.comment;
+      //   comment.dataValues.createdAt = listComment.createdAt;
 
-        delete comment.dataValues.Comment;
-      });
+      //   delete comment.dataValues.Comment;
+      // });
 
-      response1[0].dataValues.feedback.forEach((feedback) => {
-        const listFeedback = feedback.dataValues.Feedback;
+      // response1[0].dataValues.feedback.forEach((feedback) => {
+      //   const listFeedback = feedback.dataValues.Feedback;
 
-        feedback.dataValues.rate = listFeedback.rate;
-        feedback.dataValues.feedback = listFeedback.feedback;
+      //   feedback.dataValues.rate = listFeedback.rate;
+      //   feedback.dataValues.feedback = listFeedback.feedback;
 
-        delete feedback.dataValues.Feedback;
-      });
+      //   delete feedback.dataValues.Feedback;
+      // });
 
-      response1[0].dataValues.userJoined.forEach((user) => {
-        const userJoined = user.dataValues.ListPeopleJoin;
+      // response1[0].dataValues.userJoined.forEach((user) => {
+      //   const userJoined = user.dataValues.ListPeopleJoin;
 
-        user.dataValues.roomId = userJoined.roomId;
+      //   user.dataValues.roomId = userJoined.roomId;
 
-        delete user.dataValues.ListPeopleJoin;
-      });
+      //   delete user.dataValues.ListPeopleJoin;
+      // });
 
       resolve({
-        success: response1 ? true : false,
-        mess: response1 ? "Lấy dữ liệu thành công" : "Có lỗi",
-        response1: response1,
+        success: response ? true : false,
+        mess: response ? "Lấy dữ liệu thành công" : "Có lỗi",
+        response: response,
       });
     } catch (error) {
       reject(error);

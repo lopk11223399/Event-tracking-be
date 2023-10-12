@@ -102,10 +102,6 @@ export const getUser = (userId) => {
             as: "facultyData",
             attributes: ["id", "nameFaculty"],
           },
-          {
-            model: db.Event,
-            as: "eventFollowed",
-          },
         ],
       });
       resolve({
