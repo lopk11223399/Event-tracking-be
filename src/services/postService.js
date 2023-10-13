@@ -146,7 +146,7 @@ export const getAllEvent = ({
           response: response,
         });
       }
-      const response = await db.Event.findAll({
+      const response = await db.Event.findAndCountAll({
         where: query,
         ...queries,
         include: [
@@ -188,8 +188,7 @@ export const getAllEvent = ({
           exclude: ["fileNameImage", "fileNameQr", "updatedAt"],
         },
       });
-
-      response.forEach((event) => {
+      response.rows.forEach((event) => {
         event.dataValues.onlineEvent.length === 0
           ? (event.dataValues.onlineEvent = null)
           : event.dataValues.onlineEvent;
@@ -199,13 +198,13 @@ export const getAllEvent = ({
           : event.dataValues.offlineEvent;
       });
 
-      response.forEach((event) => {
+      response.rows.forEach((event) => {
         event.dataValues.followers.forEach((follower) => {
           delete follower.dataValues.ListEventFollow;
         });
       });
 
-      response.forEach((event) => {
+      response.rows.forEach((event) => {
         event.dataValues.commentEvent.forEach((comment) => {
           const listComment = comment.dataValues.Comment;
           comment.dataValues.comment = listComment.comment;
@@ -214,7 +213,7 @@ export const getAllEvent = ({
         });
       });
 
-      response.forEach((event) => {
+      response.rows.forEach((event) => {
         event.dataValues.userJoined.forEach((user) => {
           const userJoined = user.dataValues.ListPeopleJoin;
           user.dataValues.roomId = userJoined.roomId;
