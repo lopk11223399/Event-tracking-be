@@ -104,6 +104,7 @@ export const getAllEvent = ({
       const queries = { raw: false, nest: true };
       const offset = !page || +page <= 1 ? 0 : +page - 1;
       const fLimit = +limit || +process.env.LIMIT_USER;
+      queries.distinct = true;
       queries.offset = offset * fLimit;
       queries.limit = fLimit;
       if (order) queries.order = [order];
@@ -149,6 +150,7 @@ export const getAllEvent = ({
       const response = await db.Event.findAndCountAll({
         where: query,
         ...queries,
+
         include: [
           {
             model: db.User,
