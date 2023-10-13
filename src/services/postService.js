@@ -34,7 +34,7 @@ export const createEvent = (body, id, fileData) => {
         true,
         "Asia/Ho_Chi_Minh"
       );
-      // createRoom();
+      createRoom(response.dataValues.id, body);
       resolve({
         success: response ? true : false,
         mess: response ? "Created event successfull" : "not",
@@ -47,28 +47,11 @@ export const createEvent = (body, id, fileData) => {
   });
 };
 
-// Để thằng createEvent gọi lại (chưa xong)
-export const createRoom = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await db.OfflineEvent.create(body);
-      const qrCodeUrl = await qrCode.toDataURL(
-        JSON.stringify({
-          id: response.dataValues.id,
-        })
-      );
-      if (response.dataValues.type === 1) {
-        const updateQr = await db.OnlineEvent.update({});
-      } else {
-        const updateQr = await db.OfflineEvent.update({});
-      }
-      resolve({
-        success: response ? true : false,
-        mess: response ? "Tạo phòng thành công" : "Đã có lỗi gì đó xảy ra",
-      });
-    } catch (error) {
-      reject(error);
-    }
+export const createRoom = async () => {
+  const response = await db.OfflineEvent.create({
+    eventId: 1,
+    roomId: 123,
+    topic: "abc",
   });
 };
 
@@ -226,7 +209,8 @@ export const getAllEvent = ({
       resolve({
         success: response ? true : false,
         mess: response ? "Get data success" : "Get data failure",
-        response: response,
+        response: response.rows,
+        count: response.count,
       });
     } catch (error) {
       reject(error);
