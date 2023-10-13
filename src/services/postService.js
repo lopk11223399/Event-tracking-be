@@ -34,7 +34,7 @@ export const createEvent = (body, id, fileData) => {
         true,
         "Asia/Ho_Chi_Minh"
       );
-      createRoom();
+      // createRoom();
       resolve({
         success: response ? true : false,
         mess: response ? "Created event successfull" : "not",

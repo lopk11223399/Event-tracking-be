@@ -10,7 +10,6 @@ export const avatar = joi.string().required();
 export const gender = joi.boolean().required();
 export const birthDate = joi.string().required();
 export const facultyCode = joi.string().required();
-export const isActive = joi.number().required().max(1);
 export const classCode = joi.string().required();
 export const program = joi.string().required();
 export const studentCode = joi.string().required();
