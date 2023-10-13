@@ -12,28 +12,32 @@ export const createEvent = (body, id, fileData) => {
         body.image = fileData?.path;
         body.fileNameImage = fileData?.filename;
       }
+
       const response = await db.Event.create({
         ...body,
         authorId: id,
       });
-      // qrCode.toDataURL(
-      //   JSON.stringify(response.dataValues),
-      //   function (err, url) {
-      //     resolve({
-      //       err: url ? 0 : 1,
-      //       message: url ? "Got" : "User not found",
-      //       data: response.dataValues,
-      //       url: url,
-      //     });
-      //   }
+
+      // const qrCodeUrl = await qrCode.toDataURL(
+      //   JSON.stringify({
+      //     id: response.dataValues.id,
+      //   })
       // );
-      const startDateTime = new Date(response.dataValues.startDate);
-      console.log(startDateTime);
-      console.log(moment(response.dataValues.startDate));
+      // if (response.dataValues.type === 1) {
+      //   const updateQr = await db.OnlineEvent.update({});
+      // } else {
+      //   const updateQr = await db.OfflineEvent.update({});
+      // }
+
       if (fileData && !response[0] === 0)
         cloudinary.uploader.destroy(fileData.filename);
+
+      // Cancel event after 2 weeks
+      const date = new Date(response.dataValues.startDate);
+      const twoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
+      const newDate = new Date(date.getTime() - twoWeeksInMilliseconds);
       const job = new CronJob(
-        startDateTime,
+        newDate,
         function () {
           cancelEvent(id, response.id);
         },
