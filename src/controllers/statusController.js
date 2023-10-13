@@ -9,7 +9,7 @@ export const updateStatusEvent = async (req, res) => {
     if (error)
       return res
         .status(200)
-        .json({ err: false, mess: error.details[0]?.message });
+        .json({ success: false, mess: error.details[0]?.message });
     const response = await services.updateStatusEvent(eventId, req.body);
     return res.status(200).json(response);
   } catch (error) {

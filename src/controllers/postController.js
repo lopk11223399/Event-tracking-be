@@ -94,23 +94,3 @@ export const deleteEvent = async (req, res) => {
     console.log(error);
   }
 };
-
-export const getEventByUserId = async (req, res) => {
-  try {
-    const { id } = req.user;
-    const response = await services.getEventByUserId(id);
-    return res.status(200).json(response);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const scanQr = async (req, res) => {
-  try {
-    const { id } = req.user;
-    const response = await services.scanQr(id);
-    return res.status(200).json(response);
-  } catch (error) {
-    console.log(error);
-  }
-};

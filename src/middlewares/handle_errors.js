@@ -19,7 +19,7 @@ import createError from "http-errors";
 export const notFound = (req, res) => {
   const error = createError.NotFound("This route is not define");
   return res.status(error.status).json({
-    err: 1,
+    success: false,
     mess: error.message,
   });
 };

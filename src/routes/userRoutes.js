@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.use(verifyToken);
 
-router.get("/get-current-user", controllers.getUser); // xóa eventDataJoined
+router.get("/get-current-user", controllers.getUser);
 router.put("/update-user", uploadUser.single("avatar"), controllers.updateUser);
 router.post("/change-password", controllers.changePassword);
 
