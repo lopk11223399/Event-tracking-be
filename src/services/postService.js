@@ -18,17 +18,6 @@ export const createEvent = (body, id, fileData) => {
         authorId: id,
       });
 
-      // const qrCodeUrl = await qrCode.toDataURL(
-      //   JSON.stringify({
-      //     id: response.dataValues.id,
-      //   })
-      // );
-      // if (response.dataValues.type === 1) {
-      //   const updateQr = await db.OnlineEvent.update({});
-      // } else {
-      //   const updateQr = await db.OfflineEvent.update({});
-      // }
-
       if (fileData && !response[0] === 0)
         cloudinary.uploader.destroy(fileData.filename);
 
@@ -45,6 +34,7 @@ export const createEvent = (body, id, fileData) => {
         true,
         "Asia/Ho_Chi_Minh"
       );
+      createRoom();
       resolve({
         success: response ? true : false,
         mess: response ? "Created event successfull" : "not",
@@ -57,11 +47,21 @@ export const createEvent = (body, id, fileData) => {
   });
 };
 
-// Để thằng createEvent gọi lại
+// Để thằng createEvent gọi lại (chưa xong)
 export const createRoom = () => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await db.OfflineEvent.create(body);
+      const qrCodeUrl = await qrCode.toDataURL(
+        JSON.stringify({
+          id: response.dataValues.id,
+        })
+      );
+      if (response.dataValues.type === 1) {
+        const updateQr = await db.OnlineEvent.update({});
+      } else {
+        const updateQr = await db.OfflineEvent.update({});
+      }
       resolve({
         success: response ? true : false,
         mess: response ? "Tạo phòng thành công" : "Đã có lỗi gì đó xảy ra",
@@ -288,42 +288,42 @@ export const getEvent = (eventId) => {
           ],
         },
       });
-      // response1[0].dataValues.onlineEvent.length === 0
-      //   ? (response1[0].dataValues.onlineEvent = null)
-      //   : response1[0].dataValues.onlineEvent;
-      // response1[0].dataValues.offlineEvent.length === 0
-      //   ? (response1[0].dataValues.offlineEvent = null)
-      //   : response1[0].dataValues.offlineEvent;
+      response.dataValues.onlineEvent.length === 0
+        ? (response.dataValues.onlineEvent = null)
+        : response.dataValues.onlineEvent;
+      response.dataValues.offlineEvent.length === 0
+        ? (response.dataValues.offlineEvent = null)
+        : response.dataValues.offlineEvent;
 
-      // response1[0].dataValues.followers.forEach((follower) => {
-      //   delete follower.dataValues.ListEventFollow;
-      // });
+      response.dataValues.followers.forEach((follower) => {
+        delete follower.dataValues.ListEventFollow;
+      });
 
-      // response1[0].dataValues.commentEvent.forEach((comment) => {
-      //   const listComment = comment.dataValues.Comment;
+      response.dataValues.commentEvent.forEach((comment) => {
+        const listComment = comment.dataValues.Comment;
 
-      //   comment.dataValues.comment = listComment.comment;
-      //   comment.dataValues.createdAt = listComment.createdAt;
+        comment.dataValues.comment = listComment.comment;
+        comment.dataValues.createdAt = listComment.createdAt;
 
-      //   delete comment.dataValues.Comment;
-      // });
+        delete comment.dataValues.Comment;
+      });
 
-      // response1[0].dataValues.feedback.forEach((feedback) => {
-      //   const listFeedback = feedback.dataValues.Feedback;
+      response.dataValues.feedback.forEach((feedback) => {
+        const listFeedback = feedback.dataValues.Feedback;
 
-      //   feedback.dataValues.rate = listFeedback.rate;
-      //   feedback.dataValues.feedback = listFeedback.feedback;
+        feedback.dataValues.rate = listFeedback.rate;
+        feedback.dataValues.feedback = listFeedback.feedback;
 
-      //   delete feedback.dataValues.Feedback;
-      // });
+        delete feedback.dataValues.Feedback;
+      });
 
-      // response1[0].dataValues.userJoined.forEach((user) => {
-      //   const userJoined = user.dataValues.ListPeopleJoin;
+      response.dataValues.userJoined.forEach((user) => {
+        const userJoined = user.dataValues.ListPeopleJoin;
 
-      //   user.dataValues.roomId = userJoined.roomId;
+        user.dataValues.roomId = userJoined.roomId;
 
-      //   delete user.dataValues.ListPeopleJoin;
-      // });
+        delete user.dataValues.ListPeopleJoin;
+      });
 
       resolve({
         success: response ? true : false,
