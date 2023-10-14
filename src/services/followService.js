@@ -51,31 +51,12 @@ export const getAllFollowByUserId = (
         where: { userId: userId },
         ...queries,
         attributes: {
-          exclude: [
-            "userId",
-            "eventId",
-            "createdAt",
-            "updatedAt",
-            "EventId",
-            "UserId",
-          ],
+          exclude: ["createdAt", "updatedAt", "EventId", "UserId"],
         },
         include: [
           {
             model: db.Event,
             as: "eventData",
-            attributes: [
-              "id",
-              "authorId",
-              "title",
-              "description",
-              "image",
-              "location",
-              "startDate",
-              "finishDate",
-              "status",
-              "limitParticipant",
-            ],
           },
         ],
       });
