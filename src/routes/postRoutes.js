@@ -5,6 +5,7 @@ import verifyToken from "../middlewares/verify_token";
 import { uploadEvent } from "../middlewares/uploader";
 const router = express.Router();
 
+// router.get("/test/:eventId", controllers.test);
 router.get("/get-all-event", controllers.getAllEvent);
 router.get("/detail-event/:id", controllers.getEvent);
 

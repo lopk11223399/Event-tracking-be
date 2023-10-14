@@ -19,7 +19,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       numberRoom: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       timeRoom: {
         type: Sequelize.STRING,

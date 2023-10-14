@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       userId: DataTypes.INTEGER,
       eventId: DataTypes.INTEGER,
       roomId: DataTypes.INTEGER,
+      isJoined: DataTypes.BOOLEAN,
     },
     {
       sequelize,

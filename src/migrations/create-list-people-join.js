@@ -18,6 +18,9 @@ module.exports = {
       roomId: {
         type: Sequelize.INTEGER,
       },
+      isJoined: {
+        type: Sequelize.BOOLEAN,
+      },
       createdAt: {
         allowNull: false,
         type: "TIMESTAMP",

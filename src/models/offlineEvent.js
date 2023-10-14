@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       eventId: DataTypes.INTEGER,
       roomId: DataTypes.INTEGER,
       topic: DataTypes.STRING,
-      numberRoom: DataTypes.INTEGER,
+      numberRoom: DataTypes.STRING,
       timeRoom: DataTypes.STRING,
       qrCode: DataTypes.STRING,
     },

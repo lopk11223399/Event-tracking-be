@@ -34,7 +34,11 @@ export const createEvent = (body, id, fileData) => {
         true,
         "Asia/Ho_Chi_Minh"
       );
-      createRoom(response.dataValues.id, body);
+      // createRoom(
+      //   response.dataValues.id,
+      //   body.room,
+      //   response.dataValues.typeEvent
+      // );
       resolve({
         success: response ? true : false,
         mess: response ? "Created event successfull" : "not",
@@ -47,12 +51,32 @@ export const createEvent = (body, id, fileData) => {
   });
 };
 
-export const createRoom = async () => {
-  const response = await db.OfflineEvent.create({
-    eventId: 1,
-    roomId: 123,
-    topic: "abc",
-  });
+const createRoom = (rooms, eventId, typeEvent) => {
+  try {
+    if (typeEvent === 0) {
+      rooms.forEach(async (room) => {
+        const response = await db.OfflineEvent.create({
+          eventId: eventId,
+          roomId: room.roomId,
+          topic: room.topic,
+          numberRoom: room.numberRoom,
+          timeRoom: room.timeRoom,
+        });
+      });
+    } else {
+      rooms.forEach(async (room) => {
+        const response = await db.OnlineEvent.create({
+          eventId: eventId,
+          roomId: room.roomId,
+          topic: room.topic,
+          linkRoomUrl: room.linkRoomUrl,
+          timeRoom: room.timeRoom,
+        });
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 // not finish
@@ -321,14 +345,14 @@ export const getEvent = (eventId) => {
   });
 };
 
-export const cancelEvent = (userId, eventId) => {
+export const cancelEvent = (authorId, eventId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await db.Event.update(
         { status: 5 },
         {
           where: {
-            [Op.and]: [{ authorId: userId }, { id: eventId }, { status: 1 }],
+            [Op.and]: [{ authorId: authorId }, { id: eventId }, { status: 1 }],
           },
         }
       );
@@ -423,7 +447,7 @@ export const deleteEvent = (eventId) => {
           userId: follower.dataValues.userId,
           eventId: eventId,
           notification_code: 1,
-          content: "Sự kiện đã bị hủy",
+          content: "Sự kiện đã bị hủy", // cần xem lại cái này có cần thiết không
         });
       });
       response[0].dataValues.peopleData.forEach(async (people) => {

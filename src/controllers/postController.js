@@ -94,3 +94,14 @@ export const deleteEvent = async (req, res) => {
     console.log(error);
   }
 };
+
+// Test
+// export const test = async (req, res) => {
+//   try {
+//     const { eventId } = req.params;
+//     const response = await services.test(eventId);
+//     return res.status(200).json(response);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };

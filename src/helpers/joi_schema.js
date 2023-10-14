@@ -24,6 +24,7 @@ export const description = joi.string().required();
 export const status = joi.number().required();
 export const typeEvent = joi.boolean().required();
 export const location = joi.string();
+export const rooms = joi.array();
 
 export const comment = joi.string().required().min(8);
 
