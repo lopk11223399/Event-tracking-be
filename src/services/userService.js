@@ -230,3 +230,39 @@ export const changePassword = (body, userId) =>
       reject(e);
     }
   });
+
+export const getAllEventByUserId = (
+  userId,
+  { order, page, limit, ...query }
+) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const queries = { raw: false, nest: true };
+      const offset = !page || +page <= 1 ? 0 : +page - 1;
+      const fLimit = +limit || +process.env.LIMIT_USER;
+      queries.offset = offset * fLimit;
+      queries.limit = fLimit;
+      if (order) queries.order = [order];
+      const response = await db.ListPeopleJoin.findAll({
+        where: { userId: userId },
+        ...queries,
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "EventId", "UserId"],
+        },
+        include: [
+          {
+            model: db.Event,
+            as: "eventData",
+          },
+        ],
+      });
+      resolve({
+        err: response ? true : false,
+        message: response ? "Get data success" : "Get data failure",
+        response: response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
