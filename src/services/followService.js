@@ -51,7 +51,14 @@ export const getAllFollowByUserId = (
         where: { userId: userId },
         ...queries,
         attributes: {
-          exclude: ["createdAt", "updatedAt", "EventId", "UserId"],
+          exclude: [
+            "createdAt",
+            "updatedAt",
+            "EventId",
+            "UserId",
+            "userId",
+            "eventId",
+          ],
         },
         include: [
           {
@@ -61,7 +68,7 @@ export const getAllFollowByUserId = (
         ],
       });
       resolve({
-        err: response ? true : false,
+        success: response ? true : false,
         message: response ? "Get data success" : "Get data failure",
         response: response,
       });
