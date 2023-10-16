@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Notification.belongsTo(models.TypeNotification, {
+        foreignKey: "notification_code",
+        as: "notiData",
+      });
+      Notification.belongsTo(models.Event, {
+        foreignKey: "eventId",
+        as: "eventData",
+      });
     }
   }
   Notification.init(

@@ -6,7 +6,19 @@ export const getNotifications = (userId) => {
     try {
       const response = await db.Notification.findAll({
         where: { [Op.and]: [{ userId: userId }, { isWatched: false }] },
+        attributes: ["isWatched", "createdAt"],
         order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: db.TypeNotification,
+            as: "notiData",
+            attributes: ["id", "nameNotification"],
+          },
+          {
+            model: db.Event,
+            as: "eventData",
+          },
+        ],
       });
       resolve({
         success: response ? true : false,
