@@ -33,7 +33,7 @@ export const register = ({ username, password, email, name }) => {
               roleId: response[0].roleId,
             },
             process.env.JWT_SECRET,
-            { expiresIn: "45s" }
+            { expiresIn: "7d" }
           )
         : null;
 
@@ -95,7 +95,7 @@ export const login = ({ username, password }) => {
               roleId: response.roleId,
             },
             process.env.JWT_SECRET,
-            { expiresIn: "45s" }
+            { expiresIn: "7d" }
           )
         : null;
 
@@ -153,7 +153,7 @@ export const refreshToken = (refresh_token) =>
                   roleId: response.roleId,
                 },
                 process.env.JWT_SECRET,
-                { expiresIn: "1d" }
+                { expiresIn: "7d" }
               );
               resolve({
                 success: accessToken ? 0 : 1,

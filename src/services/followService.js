@@ -26,7 +26,7 @@ export const getAllFollower = (eventId) => {
       });
       resolve({
         err: response ? true : false,
-        message: response ? "Get data success" : "Get data failure",
+        mess: response ? "Get data success" : "Get data failure",
         response: response,
       });
     } catch (error) {
@@ -44,10 +44,11 @@ export const getAllFollowByUserId = (
       const queries = { raw: false, nest: true };
       const offset = !page || +page <= 1 ? 0 : +page - 1;
       const fLimit = +limit || +process.env.LIMIT_USER;
+      queries.distinct = true;
       queries.offset = offset * fLimit;
       queries.limit = fLimit;
       if (order) queries.order = [order];
-      const response = await db.ListEventFollow.findAll({
+      const response = await db.ListEventFollow.findAndCountAll({
         where: { userId: userId },
         ...queries,
         attributes: {
@@ -69,8 +70,9 @@ export const getAllFollowByUserId = (
       });
       resolve({
         success: response ? true : false,
-        message: response ? "Get data success" : "Get data failure",
-        response: response,
+        mess: response ? "Get data success" : "Get data failure",
+        response: response.rows,
+        count: response.count,
       });
     } catch (error) {
       reject(error);
