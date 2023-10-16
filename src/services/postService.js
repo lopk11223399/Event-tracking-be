@@ -26,7 +26,7 @@ export const createEvent = (body, id, fileData) => {
       const twoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
       const newDate = new Date(date.getTime() - twoWeeksInMilliseconds);
       const job = new CronJob(
-        newDate,
+        date,
         function () {
           cancelEvent(id, response.id);
         },
@@ -356,57 +356,58 @@ export const cancelEvent = (authorId, eventId) => {
           },
         }
       );
-      const people = await db.Event.findAll({
-        where: { id: eventId },
-        attributes: ["id"],
-        include: [
-          {
-            model: db.ListEventFollow,
-            as: "followerData",
-            attributes: ["userId"],
-          },
-          {
-            model: db.ListPeopleJoin,
-            as: "peopleData",
-            attributes: ["userId"],
-          },
-        ],
-      });
-      people[0].dataValues.followerData.forEach(async (follower) => {
-        await db.ListEventFollow.destroy({
-          where: {
-            [Op.and]: [
-              { UserId: follower.dataValues.userId },
-              { EventId: eventId },
-            ],
-          },
+      if (response[0] > 0) {
+        const people = await db.Event.findAll({
+          where: { id: eventId },
+          attributes: ["id"],
+          include: [
+            {
+              model: db.ListEventFollow,
+              as: "followerData",
+              attributes: ["userId"],
+            },
+            {
+              model: db.ListPeopleJoin,
+              as: "peopleData",
+              attributes: ["userId"],
+            },
+          ],
         });
-        await db.Notification.create({
-          userId: follower.dataValues.userId,
-          eventId: eventId,
-          notification_code: 1,
-          content: "Sự kiện đã bị hủy",
+        people[0].dataValues.followerData.forEach(async (follower) => {
+          await db.ListEventFollow.destroy({
+            where: {
+              [Op.and]: [
+                { UserId: follower.dataValues.userId },
+                { EventId: eventId },
+              ],
+            },
+          });
+          await db.Notification.create({
+            userId: follower.dataValues.userId,
+            eventId: eventId,
+            notification_code: 1,
+          });
         });
-      });
-      people[0].dataValues.peopleData.forEach(async (people) => {
-        await db.ListPeopleJoin.destroy({
-          where: {
-            [Op.and]: [
-              { UserId: people.dataValues.userId },
-              { EventId: eventId },
-            ],
-          },
+        people[0].dataValues.peopleData.forEach(async (people) => {
+          await db.ListPeopleJoin.destroy({
+            where: {
+              [Op.and]: [
+                { UserId: people.dataValues.userId },
+                { EventId: eventId },
+              ],
+            },
+          });
+          await db.Notification.create({
+            userId: people.dataValues.userId,
+            eventId: eventId,
+            notification_code: 1,
+            content: "Sự kiện đã bị hủy",
+          });
         });
-        await db.Notification.create({
-          userId: people.dataValues.userId,
-          eventId: eventId,
-          notification_code: 1,
-          content: "Sự kiện đã bị hủy",
-        });
-      });
+      }
       resolve({
-        success: response ? true : false,
-        mess: response ? "Hủy thành công" : "Đã xảy ra lỗi gì đó",
+        success: response[0] > 0 ? true : false,
+        mess: response[0] > 0 ? "Hủy thành công" : "Đã xảy ra lỗi gì đó",
       });
     } catch (error) {
       reject(error);
@@ -475,3 +476,35 @@ export const deleteEvent = (eventId) => {
     }
   });
 };
+
+// export const test = () => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       const people = await db.ListPeopleJoin.findAll({
+//         where: { [Op.and]: [{ EventId: 205 }, { isJoined: true }] },
+//       });
+//       const event = await db.Event.findOne({ where: { id: 205 } });
+//       people.forEach(async (item) => {
+//         const student = await db.Student.findOne({
+//           where: { studentId: item.dataValues.userId },
+//         });
+//         if (student) {
+//           student.dataValues.point += event.dataValues.addPoint;
+//           await db.Student.update(
+//             { point: student.dataValues.point },
+//             { where: { studentId: item.dataValues.userId } }
+//           );
+//         }
+//       });
+//       resolve({
+//         err: people ? true : false,
+//         mess: people
+//           ? "Cập nhật trạng thái thành công"
+//           : "Đã có lỗi gì đó xảy ra",
+//         event: event.dataValues.addPoint,
+//       });
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// };

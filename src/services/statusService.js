@@ -1,5 +1,6 @@
 import db from "../models";
 import { CronJob } from "cron";
+import { Op } from "sequelize";
 
 // need fix
 export const updateStatusEvent = (eventId, body) => {
@@ -24,7 +25,9 @@ export const updateStatusEvent = (eventId, body) => {
         const finish = new CronJob(
           date.dataValues.finishDate,
           function () {
+            notificationFinish(eventId);
             updateStatusEvent(eventId, { status: 4 });
+            addPoint(eventId);
           },
           null,
           true,
@@ -55,6 +58,46 @@ const notificationStart = async (eventId) => {
         eventId: item.dataValues.eventId,
         notification_code: 4,
       });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const notificationFinish = async (eventId) => {
+  try {
+    const people = await db.ListPeopleJoin.findAll({
+      where: { EventId: eventId },
+    });
+    people.forEach(async (item) => {
+      await db.Notification.create({
+        userId: item.dataValues.userId,
+        eventId: item.dataValues.eventId,
+        notification_code: 5,
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const addPoint = async (eventId) => {
+  try {
+    const people = await db.ListPeopleJoin.findAll({
+      where: { [Op.and]: [{ EventId: eventId }, { isJoined: true }] },
+    });
+    const event = await db.Event.findOne({ where: { id: eventId } });
+    people.forEach(async (item) => {
+      const student = await db.Student.findOne({
+        where: { studentId: item.dataValues.userId },
+      });
+      if (student) {
+        student.dataValues.point += event.dataValues.addPoint;
+        await db.Student.update(
+          { point: student.dataValues.point },
+          { where: { studentId: item.dataValues.userId } }
+        );
+      }
     });
   } catch (error) {
     console.log(error);

@@ -16,28 +16,28 @@ export const createEvent = async (req, res) => {
   try {
     const fileData = req.file;
     const { id } = req.user;
-    const { error } = joi
-      .object({
-        title,
-        startDate,
-        finishDate,
-        image,
-        description,
-        typeEvent,
-        status,
-        location,
-      })
-      .validate({
-        ...req.body,
-        image: fileData?.path,
-      });
-    if (error) {
-      if (fileData) cloudinary.uploader.destroy(fileData.filename);
-      return res.status(200).json({
-        success: false,
-        mess: error.details[0]?.message,
-      });
-    }
+    // const { error } = joi
+    //   .object({
+    //     title,
+    //     startDate,
+    //     finishDate,
+    //     image,
+    //     description,
+    //     typeEvent,
+    //     status,
+    //     location,
+    //   })
+    //   .validate({
+    //     ...req.body,
+    //     image: fileData?.path,
+    //   });
+    // if (error) {
+    //   if (fileData) cloudinary.uploader.destroy(fileData.filename);
+    //   return res.status(200).json({
+    //     success: false,
+    //     mess: error.details[0]?.message,
+    //   });
+    // }
     const response = await services.createEvent(req.body, id, fileData);
     return res.status(200).json(response);
   } catch (error) {
@@ -95,11 +95,10 @@ export const deleteEvent = async (req, res) => {
   }
 };
 
-// Test
+// Test;
 // export const test = async (req, res) => {
 //   try {
-//     const { eventId } = req.params;
-//     const response = await services.test(eventId);
+//     const response = await services.test();
 //     return res.status(200).json(response);
 //   } catch (error) {
 //     console.log(error);
