@@ -49,6 +49,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
         as: "followData",
       });
+      User.belongsTo(models.ResponseComment, {
+        foreignKey: "id",
+        targetKey: "commentId",
+        as: "responseCommentData",
+      });
     }
   }
   User.init(

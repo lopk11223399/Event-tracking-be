@@ -1,6 +1,8 @@
 import { Op } from "sequelize";
 import db from "../models";
 
+// trả về thằng response comment
+
 export const postComment = (body, id, eventId) =>
   new Promise(async (resolve, reject) => {
     try {

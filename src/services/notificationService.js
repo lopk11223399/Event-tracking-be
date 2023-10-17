@@ -30,3 +30,5 @@ export const getNotifications = (userId) => {
     }
   });
 };
+
+// thêm thằng xem noti

@@ -277,6 +277,13 @@ export const getEvent = (eventId) => {
             model: db.User,
             as: "commentEvent",
             attributes: ["id", "name", "email", "avatar"],
+            // include: [
+            //   {
+            //     model: db.ResponseComment,
+            //     as: "responseCommentData",
+            //     attributes: ["response", "createdAt", "userId"],
+            //   },
+            // ],
           },
           {
             model: db.OfflineEvent,
