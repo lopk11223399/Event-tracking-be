@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsTo(models.ResponseComment, {
         foreignKey: "id",
         targetKey: "commentId",
-        as: "responseCommentData",
+        as: "responseData",
       });
     }
   }

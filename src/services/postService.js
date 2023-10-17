@@ -183,6 +183,19 @@ export const getAllEvent = ({
             model: db.User,
             as: "commentEvent",
             attributes: ["id", "name", "email", "avatar"],
+            include: [
+              {
+                model: db.ResponseComment,
+                as: "responseData",
+                attributes: ["response", "commentId", "createdAt", "userId"],
+                include: [
+                  {
+                    model: db.User,
+                    as: "userData",
+                  },
+                ],
+              },
+            ],
           },
           {
             model: db.OfflineEvent,
@@ -216,9 +229,18 @@ export const getAllEvent = ({
       response.rows.forEach((event) => {
         event.dataValues.commentEvent.forEach((comment) => {
           const listComment = comment.dataValues.Comment;
+          const listResponse = comment.dataValues.responseData.userData;
+
           comment.dataValues.comment = listComment.comment;
           comment.dataValues.createdAt = listComment.createdAt;
+
+          comment.dataValues.responseData.dataValues.name = listResponse.name;
+          comment.dataValues.responseData.dataValues.avatar =
+            listResponse.avatar;
+          comment.dataValues.responseData.dataValues.email = listResponse.email;
+
           delete comment.dataValues.Comment;
+          delete comment.dataValues.responseData.dataValues.userData;
         });
       });
 
@@ -277,13 +299,19 @@ export const getEvent = (eventId) => {
             model: db.User,
             as: "commentEvent",
             attributes: ["id", "name", "email", "avatar"],
-            // include: [
-            //   {
-            //     model: db.ResponseComment,
-            //     as: "responseCommentData",
-            //     attributes: ["response", "createdAt", "userId"],
-            //   },
-            // ],
+            include: [
+              {
+                model: db.ResponseComment,
+                as: "responseData",
+                attributes: ["response", "commentId", "createdAt", "userId"],
+                include: [
+                  {
+                    model: db.User,
+                    as: "userData",
+                  },
+                ],
+              },
+            ],
           },
           {
             model: db.OfflineEvent,
@@ -318,10 +346,17 @@ export const getEvent = (eventId) => {
       response.dataValues.commentEvent.forEach((comment) => {
         const listComment = comment.dataValues.Comment;
 
+        const listResponse = comment.dataValues.responseData.userData;
+
         comment.dataValues.comment = listComment.comment;
         comment.dataValues.createdAt = listComment.createdAt;
 
+        comment.dataValues.responseData.dataValues.name = listResponse.name;
+        comment.dataValues.responseData.dataValues.avatar = listResponse.avatar;
+        comment.dataValues.responseData.dataValues.email = listResponse.email;
+
         delete comment.dataValues.Comment;
+        delete comment.dataValues.responseData.dataValues.userData;
       });
 
       response.dataValues.feedback.forEach((feedback) => {
