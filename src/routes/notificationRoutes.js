@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.use(verifyToken);
 router.get("/", controllers.getNotifications);
+router.put("/:eventId", controllers.updateNotification);
 
 module.exports = router;

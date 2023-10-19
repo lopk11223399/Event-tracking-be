@@ -31,4 +31,24 @@ export const getNotifications = (userId) => {
   });
 };
 
-// thêm thằng xem noti
+export const updateNotification = (userId, eventId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkWatched = await db.Notification.findAll({
+        where: { userId: userId, eventId: eventId },
+      });
+      if (checkWatched[0].dataValues.isWatched === false) {
+        const response = await db.Notification.update(
+          { isWatched: true },
+          { where: { userId: userId, eventId: eventId } }
+        );
+        resolve({
+          success: response[0] > 0 ? true : false,
+          mess: response[0] > 0 ? "Update notification successfull" : "not",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

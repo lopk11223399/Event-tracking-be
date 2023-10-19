@@ -32,6 +32,5 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Notification",
     }
   );
-  // Event.removeAttribute("id");
   return Notification;
 };
