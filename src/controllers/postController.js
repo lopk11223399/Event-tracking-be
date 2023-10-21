@@ -24,6 +24,7 @@ export const createEvent = async (req, res) => {
         description,
         typeEvent,
         location,
+        addPoint,
       })
       .validate({
         ...req.body,
