@@ -83,7 +83,6 @@ export const getUser = (userId) => {
         },
         attributes: {
           exclude: [
-            "roleId",
             "isActive",
             "refresh_token",
             "createdAt",
@@ -96,10 +95,6 @@ export const getUser = (userId) => {
             model: db.Student,
             as: "studentData",
             attributes: ["id", "classCode", "program", "studentCode", "point"],
-          },
-          {
-            model: db.Role,
-            as: "roleData",
           },
           {
             model: db.Faculty,
