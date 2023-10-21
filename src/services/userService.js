@@ -98,6 +98,10 @@ export const getUser = (userId) => {
             attributes: ["id", "classCode", "program", "studentCode", "point"],
           },
           {
+            model: db.Role,
+            as: "roleData",
+          },
+          {
             model: db.Faculty,
             as: "facultyData",
             attributes: ["id", "nameFaculty"],

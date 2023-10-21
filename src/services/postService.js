@@ -15,6 +15,7 @@ export const createEvent = (body, id, fileData) => {
 
       const response = await db.Event.create({
         ...body,
+        status: 1,
         authorId: id,
       });
 

@@ -21,7 +21,6 @@ export const startDate = joi.string();
 export const finishDate = joi.string();
 export const image = joi.string();
 export const description = joi.string();
-export const status = joi.number();
 export const typeEvent = joi.boolean();
 export const location = joi.string();
 export const rooms = joi.array();

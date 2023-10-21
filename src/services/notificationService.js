@@ -1,12 +1,19 @@
 import db, { sequelize } from "../models";
 import { Op } from "sequelize";
 
-export const getNotifications = (userId) => {
+export const getNotifications = (userId, { page, limit, code, ...query }) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const queries = { raw: true, nest: true };
+      const offset = !page || +page <= 1 ? 0 : +page - 1;
+      const fLimit = +limit || +process.env.LIMIT_USER;
+      queries.offset = offset * fLimit;
+      queries.limit = fLimit;
+      if (code) query.notification_code = Number(code);
       const response = await db.Notification.findAll({
-        where: { [Op.and]: [{ userId: userId }, { isWatched: false }] },
-        attributes: ["isWatched", "createdAt"],
+        where: { [Op.and]: [{ userId: userId }, query] },
+        attributes: ["isWatched", "createdAt", "notification_code"],
+        ...queries,
         order: [["createdAt", "DESC"]],
         include: [
           {
@@ -22,7 +29,7 @@ export const getNotifications = (userId) => {
       });
       resolve({
         success: response ? true : false,
-        mess: response ? "Update event successfull" : "not",
+        mess: response ? "Get Notification successfull" : "not",
         response: response,
       });
     } catch (error) {

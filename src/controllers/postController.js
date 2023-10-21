@@ -8,7 +8,6 @@ import {
   image,
   description,
   typeEvent,
-  status,
   location,
 } from "../helpers/joi_schema";
 
@@ -24,7 +23,6 @@ export const createEvent = async (req, res) => {
         image,
         description,
         typeEvent,
-        status,
         location,
       })
       .validate({
