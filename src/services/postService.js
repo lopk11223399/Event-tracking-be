@@ -30,7 +30,7 @@ export const createEvent = (body, id, fileData) => {
           await db.Notification.create({
             userId: user.dataValues.id,
             eventId: response.dataValues.id,
-            notification_code: 6,
+            notification_code: 6, //Need define
           });
         });
 
@@ -91,10 +91,19 @@ const createRoom = (rooms, eventId, typeEvent) => {
   }
 };
 
-// not finish
-export const updateEvent = (body, eventId) => {
+export const updateEvent = (body, eventId, fileData) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const fileName = await db.Event.findAll({
+        where: { id: eventId },
+      });
+      if (fileName)
+        cloudinary.api.delete_resources(fileName[0].dataValues.fileNameImage);
+
+      if (fileData) {
+        body.image = fileData?.path;
+        body.fileNameImage = fileData?.filename;
+      }
       const response = await db.Event.update(body, {
         where: { id: eventId },
       });
@@ -102,8 +111,11 @@ export const updateEvent = (body, eventId) => {
         success: response[0] > 0 ? true : false,
         mess: response[0] > 0 ? "Update event successfull" : "not",
       });
+      if (fileData && !response[0] === 0)
+        cloudinary.uploader.destroy(fileData.filename);
     } catch (error) {
       reject(error);
+      if (fileData) cloudinary.uploader.destroy(fileData.filename);
     }
   });
 };

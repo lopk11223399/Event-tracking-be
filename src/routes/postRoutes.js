@@ -20,6 +20,11 @@ router.post(
   isCreator,
   controllers.createEvent
 );
-router.put("/update-event/:id", isCreator, controllers.updateEvent);
+router.put(
+  "/update-event/:id",
+  uploadEvent.single("image"),
+  isCreator,
+  controllers.updateEvent
+);
 
 module.exports = router;
