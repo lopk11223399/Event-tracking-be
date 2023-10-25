@@ -22,10 +22,7 @@ export const createEvent = (body, id, fileData) => {
       if (fileData && !response[0] === 0)
         cloudinary.uploader.destroy(fileData.filename);
 
-      // Cancel event after 2 weeks
       const date = new Date(response.dataValues.startDate);
-      const twoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
-      const newDate = new Date(date.getTime() - twoWeeksInMilliseconds);
       const job = new CronJob(
         date,
         function () {
@@ -126,39 +123,21 @@ export const getAllEvent = ({
         query.status = { [Op.or]: statusess };
       }
       if (hot) {
-        const response = await db.ListPeopleJoin.findAll({
+        const hotEvent = await db.ListPeopleJoin.findAll({
+          where: query,
           attributes: [
             "eventId",
             [sequelize.fn("COUNT", "*"), "total_participants"],
           ],
           group: ["eventId"],
           order: [["total_participants", "DESC"]],
-          include: [
-            {
-              model: db.Event,
-              as: "eventData",
-              attributes: [
-                "id",
-                "authorId",
-                "title",
-                "image",
-                "startDate",
-                "finishDate",
-                "status",
-              ],
-            },
-          ],
         });
-        resolve({
-          success: response ? true : false,
-          mess: response ? "Lấy dữ liệu thành công" : "Có lỗi",
-          response: response,
-        });
+        let id = hotEvent.map((item) => item.dataValues.eventId);
+        query.id = { [Op.or]: id };
       }
       const response = await db.Event.findAndCountAll({
         where: query,
         ...queries,
-
         include: [
           {
             model: db.User,
@@ -175,29 +154,24 @@ export const getAllEvent = ({
             as: "userJoined",
             attributes: ["id", "name", "email", "avatar"],
           },
-          {
-            model: db.Status,
-            as: "statusEvent",
-            attributes: ["id", "statusName"],
-          },
-          {
-            model: db.User,
-            as: "commentEvent",
-            attributes: ["id", "name", "email", "avatar"],
-            include: [
-              {
-                model: db.ResponseComment,
-                as: "responseData",
-                attributes: ["response", "commentId", "createdAt", "userId"],
-                include: [
-                  {
-                    model: db.User,
-                    as: "userData",
-                  },
-                ],
-              },
-            ],
-          },
+          // {
+          //   model: db.User,
+          //   as: "commentEvent",
+          //   attributes: ["id", "name", "email", "avatar"],
+          //   include: [
+          //     {
+          //       model: db.ResponseComment,
+          //       as: "responseData",
+          //       attributes: ["response", "commentId", "createdAt", "userId"],
+          //       include: [
+          //         {
+          //           model: db.User,
+          //           as: "userData",
+          //         },
+          //       ],
+          //     },
+          //   ],
+          // },
           {
             model: db.OfflineEvent,
             as: "offlineEvent",
@@ -227,23 +201,23 @@ export const getAllEvent = ({
         });
       });
 
-      response.rows.forEach((event) => {
-        event.dataValues.commentEvent.forEach((comment) => {
-          const listComment = comment.dataValues.Comment;
-          const listResponse = comment.dataValues.responseData.userData;
+      // response.rows.forEach((event) => {
+      //   event.dataValues.commentEvent.forEach((comment) => {
+      //     const listComment = comment.dataValues.Comment;
+      //     const listResponse = comment.dataValues.responseData.userData;
 
-          comment.dataValues.comment = listComment.comment;
-          comment.dataValues.createdAt = listComment.createdAt;
+      //     comment.dataValues.comment = listComment.comment;
+      //     comment.dataValues.createdAt = listComment.createdAt;
 
-          comment.dataValues.responseData.dataValues.name = listResponse.name;
-          comment.dataValues.responseData.dataValues.avatar =
-            listResponse.avatar;
-          comment.dataValues.responseData.dataValues.email = listResponse.email;
+      //     comment.dataValues.responseData.dataValues.name = listResponse.name;
+      //     comment.dataValues.responseData.dataValues.avatar =
+      //       listResponse.avatar;
+      //     comment.dataValues.responseData.dataValues.email = listResponse.email;
 
-          delete comment.dataValues.Comment;
-          delete comment.dataValues.responseData.dataValues.userData;
-        });
-      });
+      //     delete comment.dataValues.Comment;
+      //     delete comment.dataValues.responseData.dataValues.userData;
+      //   });
+      // });
 
       response.rows.forEach((event) => {
         event.dataValues.userJoined.forEach((user) => {
