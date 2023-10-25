@@ -9,6 +9,7 @@ import {
   description,
   typeEvent,
   location,
+  addPoint,
 } from "../helpers/joi_schema";
 
 export const createEvent = async (req, res) => {

@@ -18,25 +18,39 @@ export const createEvent = (body, id, fileData) => {
         status: 1,
         authorId: id,
       });
-
       if (fileData && !response[0] === 0)
         cloudinary.uploader.destroy(fileData.filename);
 
-      const date = new Date(response.dataValues.startDate);
-      const job = new CronJob(
-        date,
-        function () {
-          cancelEvent(id, response.id);
-        },
-        null,
-        true,
-        "Asia/Ho_Chi_Minh"
-      );
-      // createRoom(
-      //   response.dataValues.id,
-      //   body.room,
-      //   response.dataValues.typeEvent
-      // );
+      if (response) {
+        const listAdmin = await db.User.findAll({
+          where: { roleId: 1 },
+        });
+
+        listAdmin.forEach(async (user) => {
+          await db.Notification.create({
+            userId: user.dataValues.id,
+            eventId: response.dataValues.id,
+            notification_code: 6,
+          });
+        });
+
+        const date = new Date(response.dataValues.startDate);
+        const job = new CronJob(
+          date,
+          function () {
+            cancelEvent(id, response.id);
+          },
+          null,
+          true,
+          "Asia/Ho_Chi_Minh"
+        );
+
+        // createRoom(
+        //   response.dataValues.id,
+        //   body.room,
+        //   response.dataValues.typeEvent
+        // );
+      }
       resolve({
         success: response ? true : false,
         mess: response ? "Created event successfull" : "not",
