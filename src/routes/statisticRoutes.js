@@ -6,6 +6,6 @@ import { isAdmin } from "../middlewares/verify_roles";
 const router = express.Router();
 
 router.use(verifyToken);
-router.get("/:eventId", controllers.updateStatusEvent);
+router.get("/", isAdmin, controllers.eventByMonth);
 
 module.exports = router;
