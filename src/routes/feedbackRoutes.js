@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.use(verifyToken);
 router.post("/:eventId", controllers.createFeedback);
+router.put("/:eventId", controllers.updateFeedback);
 
 module.exports = router;

@@ -41,6 +41,37 @@ export const createFeedback = (eventId, userId, body) => {
   });
 };
 
+export const updateFeedback = (eventId, userId, body) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkFeedback = db.Feedback.findOne({
+        where: { [Op.and]: [{ UserId: userId }, { EventId: eventId }] },
+      });
+      if (checkFeedback) {
+        const response = await db.Feedback.update(
+          {
+            rate: body.rate,
+            feedback: body.feedback,
+          },
+          { where: { [Op.and]: [{ UserId: userId }, { EventId: eventId }] } }
+        );
+        updateTotalRate(eventId);
+        resolve({
+          err: true,
+          mess: "Update feedback success",
+        });
+      } else {
+        resolve({
+          err: false,
+          mess: "Update feedback fail",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const updateTotalRate = async (eventId) => {
   try {
     const rates = await db.Feedback.findAndCountAll({
