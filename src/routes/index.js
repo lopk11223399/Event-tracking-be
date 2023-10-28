@@ -9,6 +9,7 @@ import joinEvent from "./joinEventRoutes";
 import faculty from "./facultyRoutes";
 import status from "./statusRoutes";
 import statistic from "./statisticRoutes";
+import feedback from "./feedbackRoutes";
 import { notFound } from "../middlewares/handle_errors";
 
 const initRoutes = (app) => {
@@ -23,6 +24,7 @@ const initRoutes = (app) => {
   app.use("/api/v1/faculty", faculty);
   app.use("/api/v1/status", status);
   app.use("/api/v1/statistic", statistic);
+  app.use("/api/v1/feedback", feedback);
 
   app.use(notFound);
 };

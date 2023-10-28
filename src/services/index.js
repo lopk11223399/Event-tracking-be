@@ -9,3 +9,4 @@ export * from "./joinEventService";
 export * from "./facultyService";
 export * from "./statusService";
 export * from "./statisticService";
+export * from "./feedbackService";

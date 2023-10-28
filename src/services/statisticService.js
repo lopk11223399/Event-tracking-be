@@ -2,7 +2,7 @@ import db, { sequelize } from "../models";
 import { Op } from "sequelize";
 import moment from "moment";
 
-export const eventByMonth = ({ limit, page, year, ...query }) => {
+export const eventByMonth = ({ year, ...query }) => {
   return new Promise(async (resolve, reject) => {
     try {
       if (year) {
@@ -27,8 +27,8 @@ export const eventByMonth = ({ limit, page, year, ...query }) => {
       }
 
       resolve({
-        success: true,
-        mess: "Update event successfull",
+        success: response ? true : false,
+        mess: response ? "Get data successfull" : "Not",
         response: response,
       });
     } catch (error) {
@@ -36,3 +36,18 @@ export const eventByMonth = ({ limit, page, year, ...query }) => {
     }
   });
 };
+
+// export const totalRateOf = ({ year, ...query }) => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+
+//       resolve({
+//         success: response ? true : false,
+//         mess: response ? "Get data successfull" : "Not",
+//         response: response,
+//       });
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// };

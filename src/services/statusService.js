@@ -2,7 +2,6 @@ import db from "../models";
 import { CronJob } from "cron";
 import { Op } from "sequelize";
 
-// need fix
 export const updateStatusEvent = (eventId, body) => {
   return new Promise(async (resolve, reject) => {
     try {

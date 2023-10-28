@@ -9,3 +9,4 @@ export * from "./jointEventController";
 export * from "./facultyController";
 export * from "./statusController";
 export * from "./statisticController";
+export * from "./feedbackController";
