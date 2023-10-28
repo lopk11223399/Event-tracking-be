@@ -25,8 +25,8 @@ export const createFeedback = (eventId, userId, body) => {
         });
         updateTotalRate(eventId);
         resolve({
-          err: true,
-          mess: "Feedback success",
+          err: response ? true : false,
+          mess: response ? "Feedback success" : "Feedback fail",
           response: response,
         });
       } else {
@@ -57,13 +57,16 @@ export const updateFeedback = (eventId, userId, body) => {
         );
         updateTotalRate(eventId);
         resolve({
-          err: true,
-          mess: "Update feedback success",
+          err: response[0] > 0 ? true : false,
+          mess:
+            response[0] > 0
+              ? "Update feedback success"
+              : "Update feedback fail",
         });
       } else {
         resolve({
           err: false,
-          mess: "Update feedback fail",
+          mess: "Can't find feedback",
         });
       }
     } catch (error) {

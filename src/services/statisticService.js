@@ -37,17 +37,48 @@ export const eventByMonth = ({ year, ...query }) => {
   });
 };
 
-// export const totalRateOf = ({ year, ...query }) => {
-//   return new Promise(async (resolve, reject) => {
-//     try {
+export const byGenderOfEvent = (eventId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await db.ListPeopleJoin.findAll({
+        where: {
+          [Op.and]: [{ eventId: eventId }, { isJoined: true }],
+        },
+        include: [
+          {
+            model: db.User,
+            as: "userData",
+          },
+        ],
+      });
+      const response = [];
 
-//       resolve({
-//         success: response ? true : false,
-//         mess: response ? "Get data successfull" : "Not",
-//         response: response,
-//       });
-//     } catch (error) {
-//       reject(error);
-//     }
-//   });
-// };
+      const gender = data.reduce(
+        (acc, item) => {
+          if (item.dataValues.userData.gender) {
+            acc.female += 1;
+          } else {
+            acc.male += 1;
+          }
+          return acc;
+        },
+        { female: 0, male: 0 }
+      );
+      response.push({
+        gender: "Nữ",
+        count: gender.female,
+      });
+      response.push({
+        gender: "Nam",
+        count: gender.male,
+      });
+      resolve({
+        success: data ? true : false,
+        mess: data ? "Get data successfull" : "Not",
+        response: response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
