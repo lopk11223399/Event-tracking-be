@@ -40,14 +40,14 @@ module.exports = {
       linkUrl: {
         type: Sequelize.STRING,
       },
-      limitParticipant: {
-        type: Sequelize.INTEGER,
+      totalRate: {
+        type: Sequelize.FLOAT,
       },
       addPoint: {
         type: Sequelize.FLOAT,
       },
-      totalRate: {
-        type: Sequelize.FLOAT,
+      limitParticipant: {
+        type: Sequelize.INTEGER,
       },
       fileNameImage: {
         type: Sequelize.STRING,

@@ -149,3 +149,12 @@ export const getAllEventByUserId = async (req, res) => {
     console.log(error);
   }
 };
+
+export const updateRole = async (req, res) => {
+  try {
+    const response = await services.updateRole(req.query, req.body);
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+  }
+};

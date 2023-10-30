@@ -20,5 +20,6 @@ router.put(
 router.delete("/:id", controllers.deleteUserByAdmin);
 router.get("/", controllers.getAllUsers);
 router.post("/create-user", controllers.createUserByAdmin);
+router.put("/update-role", controllers.updateRole);
 
 module.exports = router;

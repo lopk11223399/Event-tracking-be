@@ -274,3 +274,23 @@ export const getAllEventByUserId = (
     }
   });
 };
+
+export const updateRole = (query, body) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.User.update(
+        { roleId: body.roleId },
+        {
+          where: { id: query.id },
+        }
+      );
+      resolve({
+        success: response[0] > 0 ? true : false,
+        mess:
+          response[0] > 0 ? "Update role ID success" : "Update role ID fail",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
