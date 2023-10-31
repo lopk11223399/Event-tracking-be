@@ -1,6 +1,5 @@
 import joi from "joi";
 import * as services from "../services";
-import { comment } from "../helpers/joi_schema";
 
 export const postComment = async (req, res) => {
   try {
