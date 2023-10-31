@@ -70,6 +70,15 @@ export const deleteEvent = async (req, res) => {
   }
 };
 
+export const scanQR = async (req, res) => {
+  try {
+    const response = await services.scanQR(req.body);
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // Test;
 // export const test = async (req, res) => {
 //   try {

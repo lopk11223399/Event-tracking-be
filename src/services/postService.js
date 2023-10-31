@@ -45,7 +45,7 @@ export const createEvent = (body, id, fileData) => {
         );
         createRoom(
           response.dataValues.id,
-          body.rooms,
+          JSON.parse(body.rooms),
           response.dataValues.typeEvent
         );
       }
@@ -593,6 +593,21 @@ export const deleteEvent = (eventId) => {
       resolve({
         success: deleteEvent ? true : false,
         mess: deleteEvent ? "Xóa thành công" : "Có lỗi gì đó đã xảy ra",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const scanQR = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      resolve({
+        err: people ? true : false,
+        mess: people
+          ? "Cập nhật trạng thái thành công"
+          : "Đã có lỗi gì đó xảy ra",
       });
     } catch (error) {
       reject(error);
