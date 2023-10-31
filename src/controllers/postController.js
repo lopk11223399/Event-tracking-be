@@ -1,42 +1,12 @@
-import joi from "joi";
-import * as services from "../services";
 const cloudinary = require("cloudinary").v2;
-import {
-  title,
-  startDate,
-  finishDate,
-  image,
-  description,
-  typeEvent,
-  location,
-  addPoint,
-} from "../helpers/joi_schema";
-
+import joi from "joi";
 export const createEvent = async (req, res) => {
   try {
     const fileData = req.file;
     const { id } = req.user;
-    const { error } = joi
-      .object({
-        title,
-        startDate,
-        finishDate,
-        image,
-        description,
-        typeEvent,
-        location,
-        addPoint,
-      })
-      .validate({
-        ...req.body,
-        image: fileData?.path,
-      });
+    const { error } = joi.validate({ image: fileData?.path });
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
-      return res.status(200).json({
-        success: false,
-        mess: error.details[0]?.message,
-      });
     }
     const response = await services.createEvent(req.body, id, fileData);
     return res.status(200).json(response);
@@ -49,27 +19,9 @@ export const updateEvent = async (req, res) => {
   try {
     const fileData = req.file;
     const { id } = req.params;
-    const { error } = joi
-      .object({
-        title,
-        startDate,
-        finishDate,
-        image,
-        description,
-        typeEvent,
-        location,
-        addPoint,
-      })
-      .validate({
-        ...req.body,
-        image: fileData?.path,
-      });
+    const { error } = joi.validate({ image: fileData?.path });
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
-      return res.status(200).json({
-        success: false,
-        mess: error.details[0]?.message,
-      });
     }
     const response = await services.updateEvent(req.body, id, fileData);
     return res.status(200).json(response);

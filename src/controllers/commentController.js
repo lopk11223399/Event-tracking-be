@@ -6,13 +6,6 @@ export const postComment = async (req, res) => {
   try {
     const { id } = req.user;
     const { eventId } = req.params;
-    const { error } = joi.object({ comment }).validate(req.body);
-    if (error) {
-      return res.status(200).json({
-        success: false,
-        mess: error.details[0]?.message,
-      });
-    }
     const response = await services.postComment(req.body, id, eventId);
     return res.status(200).json(response);
   } catch (error) {
@@ -24,13 +17,6 @@ export const updateComment = async (req, res) => {
   try {
     const { id } = req.user;
     const { eventId } = req.params;
-    const { error } = joi.object({ comment }).validate(req.body);
-    if (error) {
-      return res.status(200).json({
-        success: false,
-        mess: error.details[0]?.message,
-      });
-    }
     const response = await services.updateComment(req.body, id, eventId);
     return res.status(200).json(response);
   } catch (error) {
