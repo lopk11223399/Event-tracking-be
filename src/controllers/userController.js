@@ -33,7 +33,7 @@ export const updateUser = async (req, res) => {
   try {
     const fileData = req.file;
     const { id } = req.user;
-    const { error } = joi.validate({ avatar: fileData?.path });
+    const { error } = joi.object.validate({ avatar: fileData?.path });
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
     }
@@ -49,7 +49,7 @@ export const updateInfoAdmin = async (req, res) => {
     const fileData = req.file;
     const { id } = req.user;
 
-    const { error } = joi.validate({ avatar: fileData?.path });
+    const { error } = joi.object.validate({ avatar: fileData?.path });
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
     }

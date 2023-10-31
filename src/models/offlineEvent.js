@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       topic: DataTypes.STRING,
       numberRoom: DataTypes.STRING,
       timeRoom: DataTypes.STRING,
-      qrCode: DataTypes.STRING,
+      qrCode: DataTypes.TEXT,
     },
     {
       sequelize,

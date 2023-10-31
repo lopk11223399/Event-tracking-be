@@ -73,15 +73,19 @@ const createRoom = (eventId, rooms, typeEvent) => {
           numberRoom: room.numberRoom,
           timeRoom: room.timeRoom,
         });
-        const url = await qrCode.toDataURL(
+        qrCode.toDataURL(
           JSON.stringify({
             eventId: eventId,
             roomId: response.dataValues.roomId,
-          })
-        );
-        await db.OfflineEvent.update(
-          { qrCode: url },
-          { where: { eventId: eventId, roomId: response.dataValues.roomId } }
+          }),
+          function (err, url) {
+            db.OfflineEvent.update(
+              { qrCode: url },
+              {
+                where: { eventId: eventId, roomId: response.dataValues.roomId },
+              }
+            );
+          }
         );
       });
     } else {
@@ -93,15 +97,19 @@ const createRoom = (eventId, rooms, typeEvent) => {
           linkRoomUrl: room.linkRoomUrl,
           timeRoom: room.timeRoom,
         });
-        const url = await qrCode.toDataURL(
+        qrCode.toDataURL(
           JSON.stringify({
             eventId: eventId,
             roomId: response.dataValues.roomId,
-          })
-        );
-        await db.OnlineEvent.update(
-          { qrCode: url },
-          { where: { eventId: eventId, roomId: response.dataValues.roomId } }
+          }),
+          function (err, url) {
+            db.OnlineEvent.update(
+              { qrCode: url },
+              {
+                where: { eventId: eventId, roomId: response.dataValues.roomId },
+              }
+            );
+          }
         );
       });
     }

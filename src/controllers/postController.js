@@ -19,7 +19,7 @@ export const updateEvent = async (req, res) => {
   try {
     const fileData = req.file;
     const { id } = req.params;
-    const { error } = joi.validate({ image: fileData?.path });
+    const { error } = joi.object.validate({ image: fileData?.path });
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
     }
