@@ -12,6 +12,7 @@ router.get("/detail-event/:id", controllers.getEvent);
 router.use(verifyToken);
 
 router.delete("/delete-event", isAdmin, controllers.deleteEvent);
+router.put("/scanQr", controllers.scanQR);
 
 router.put("/cancel-event/:eventId", isCreator, controllers.cancelEvent);
 router.post(

@@ -600,14 +600,19 @@ export const deleteEvent = (eventId) => {
   });
 };
 
-export const scanQR = () => {
+export const scanQR = (body) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const response = await db.ListPeopleJoin.update(
+        { isJoined: true },
+        {
+          where: { eventId: body.eventId, userId: body.userId },
+        }
+      );
       resolve({
-        err: people ? true : false,
-        mess: people
-          ? "Cập nhật trạng thái thành công"
-          : "Đã có lỗi gì đó xảy ra",
+        err: response[0] > 0 ? true : false,
+        mess:
+          response[0] > 0 ? "Cập nhật thành công" : "Đã có lỗi gì đó xảy ra",
       });
     } catch (error) {
       reject(error);
