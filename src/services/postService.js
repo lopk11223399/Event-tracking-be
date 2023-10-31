@@ -62,9 +62,9 @@ export const createEvent = (body, id, fileData) => {
   });
 };
 
-const createRoom = (rooms, eventId, typeEvent) => {
+const createRoom = (eventId, rooms, typeEvent) => {
   try {
-    if (typeEvent === 0) {
+    if (typeEvent === false) {
       rooms.forEach(async (room) => {
         const response = await db.OfflineEvent.create({
           eventId: eventId,

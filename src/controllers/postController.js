@@ -1,10 +1,10 @@
-const cloudinary = require("cloudinary").v2;
+import * as services from "../services";
 import joi from "joi";
 export const createEvent = async (req, res) => {
   try {
     const fileData = req.file;
     const { id } = req.user;
-    const { error } = joi.validate({ image: fileData?.path });
+    const { error } = joi.object().validate({ image: fileData?.path });
     if (error) {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
     }
