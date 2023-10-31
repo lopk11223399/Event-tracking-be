@@ -43,7 +43,6 @@ export const createEvent = (body, id, fileData) => {
           true,
           "Asia/Ho_Chi_Minh"
         );
-
         createRoom(
           response.dataValues.id,
           body.rooms,
@@ -62,16 +61,13 @@ export const createEvent = (body, id, fileData) => {
   });
 };
 
-const createRoom = (eventId, rooms, typeEvent) => {
+const createRoom = async (eventId, rooms, typeEvent) => {
   try {
     if (typeEvent === false) {
-      rooms.forEach(async (room) => {
+      if (!rooms) {
         const response = await db.OfflineEvent.create({
           eventId: eventId,
-          roomId: room.roomId,
-          topic: room.topic,
-          numberRoom: room.numberRoom,
-          timeRoom: room.timeRoom,
+          roomId: 1,
         });
         qrCode.toDataURL(
           JSON.stringify({
@@ -82,20 +78,47 @@ const createRoom = (eventId, rooms, typeEvent) => {
             db.OfflineEvent.update(
               { qrCode: url },
               {
-                where: { eventId: eventId, roomId: response.dataValues.roomId },
+                where: {
+                  eventId: eventId,
+                  roomId: response.dataValues.roomId,
+                },
               }
             );
           }
         );
-      });
+      } else {
+        rooms.forEach(async (room) => {
+          const response = await db.OfflineEvent.create({
+            eventId: eventId,
+            roomId: room.roomId,
+            topic: room.topic,
+            numberRoom: room.numberRoom,
+            timeRoom: room.timeRoom,
+          });
+          qrCode.toDataURL(
+            JSON.stringify({
+              eventId: eventId,
+              roomId: response.dataValues.roomId,
+            }),
+            function (err, url) {
+              db.OfflineEvent.update(
+                { qrCode: url },
+                {
+                  where: {
+                    eventId: eventId,
+                    roomId: response.dataValues.roomId,
+                  },
+                }
+              );
+            }
+          );
+        });
+      }
     } else {
-      rooms.forEach(async (room) => {
+      if (!rooms) {
         const response = await db.OnlineEvent.create({
           eventId: eventId,
-          roomId: room.roomId,
-          topic: room.topic,
-          linkRoomUrl: room.linkRoomUrl,
-          timeRoom: room.timeRoom,
+          roomId: 1,
         });
         qrCode.toDataURL(
           JSON.stringify({
@@ -106,12 +129,42 @@ const createRoom = (eventId, rooms, typeEvent) => {
             db.OnlineEvent.update(
               { qrCode: url },
               {
-                where: { eventId: eventId, roomId: response.dataValues.roomId },
+                where: {
+                  eventId: eventId,
+                  roomId: response.dataValues.roomId,
+                },
               }
             );
           }
         );
-      });
+      } else {
+        rooms.forEach(async (room) => {
+          const response = await db.OnlineEvent.create({
+            eventId: eventId,
+            roomId: room.roomId,
+            topic: room.topic,
+            linkRoomUrl: room.numberRoom,
+            timeRoom: room.timeRoom,
+          });
+          qrCode.toDataURL(
+            JSON.stringify({
+              eventId: eventId,
+              roomId: response.dataValues.roomId,
+            }),
+            function (err, url) {
+              db.OnlineEvent.update(
+                { qrCode: url },
+                {
+                  where: {
+                    eventId: eventId,
+                    roomId: response.dataValues.roomId,
+                  },
+                }
+              );
+            }
+          );
+        });
+      }
     }
   } catch (error) {
     console.log(error);
