@@ -82,3 +82,35 @@ export const byGenderOfEvent = (eventId) => {
     }
   });
 };
+
+export const byAgeOfEvent = (eventId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await db.ListPeopleJoin.findAll({
+        where: {
+          [Op.and]: [{ eventId: eventId }, { isJoined: true }],
+        },
+        include: [
+          {
+            model: db.User,
+            as: "userData",
+          },
+        ],
+      });
+
+      const ages = data.map((item) => {
+        return Number(
+          moment(item.dataValues.userData.birthDate).fromNow().slice(0, 2)
+        );
+      });
+
+      resolve({
+        success: data ? true : false,
+        mess: data ? "Get data successfull" : "Not",
+        response: data,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

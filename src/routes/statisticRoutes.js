@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.use(verifyToken);
 router.get("/", isAdmin, controllers.eventByMonth);
-router.get("/:eventId", isCreator, controllers.byGenderOfEvent);
+router.get("/by-gender/:eventId", isCreator, controllers.byGenderOfEvent);
+router.get("/by-age/:eventId", isCreator, controllers.byAgeOfEvent);
 
 module.exports = router;

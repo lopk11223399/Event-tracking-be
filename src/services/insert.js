@@ -47,7 +47,7 @@ export const insertDataEvent = () =>
           description: event.description,
           typeEvent: Math.random() > 0.5 ? 1 : 0,
           status: 1,
-          authorId: [1, 2, 3, 4][Math.floor(Math.random() * 4)],
+          authorId: [1, 2, 3, 4, 5][Math.floor(Math.random() * 4)],
           location:
             "30, Đường Nguyễn Hữu Thọ, Phường Hòa Thuận Tây, Quận Hải Châu, Đà Nẵng, Việt Nam",
           limitParticipant: 50,

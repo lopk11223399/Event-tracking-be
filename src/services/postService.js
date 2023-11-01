@@ -63,11 +63,12 @@ export const createEvent = (body, id, fileData) => {
 
 const createRoom = async (eventId, rooms, typeEvent) => {
   try {
+    let roomID = 0;
     if (typeEvent === false) {
       if (!rooms) {
         const response = await db.OfflineEvent.create({
           eventId: eventId,
-          roomId: 1,
+          roomId: roomID + 1,
         });
         qrCode.toDataURL(
           JSON.stringify({
@@ -88,9 +89,10 @@ const createRoom = async (eventId, rooms, typeEvent) => {
         );
       } else {
         rooms.forEach(async (room) => {
+          roomID++;
           const response = await db.OfflineEvent.create({
             eventId: eventId,
-            roomId: room.roomId,
+            roomId: roomID,
             topic: room.topic,
             numberRoom: room.numberRoom,
             timeRoom: room.timeRoom,
@@ -118,7 +120,7 @@ const createRoom = async (eventId, rooms, typeEvent) => {
       if (!rooms) {
         const response = await db.OnlineEvent.create({
           eventId: eventId,
-          roomId: 1,
+          roomId: roomID + 1,
         });
         qrCode.toDataURL(
           JSON.stringify({
@@ -139,9 +141,10 @@ const createRoom = async (eventId, rooms, typeEvent) => {
         );
       } else {
         rooms.forEach(async (room) => {
+          roomID++;
           const response = await db.OnlineEvent.create({
             eventId: eventId,
-            roomId: room.roomId,
+            roomId: roomID,
             topic: room.topic,
             linkRoomUrl: room.numberRoom,
             timeRoom: room.timeRoom,

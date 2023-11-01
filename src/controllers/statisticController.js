@@ -18,3 +18,13 @@ export const byGenderOfEvent = async (req, res) => {
     console.log(error);
   }
 };
+
+export const byAgeOfEvent = async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const response = await services.byAgeOfEvent(eventId);
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
