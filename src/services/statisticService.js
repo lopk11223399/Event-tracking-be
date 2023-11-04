@@ -114,3 +114,36 @@ export const byAgeOfEvent = (eventId) => {
     }
   });
 };
+
+export const byFaculty = (eventId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await db.ListPeopleJoin.findAll({
+        where: { eventId: eventId, isJoined: true },
+        include: {
+          model: db.User,
+          as: "userData",
+          attributes: ["facultyCode"],
+        },
+      });
+      const response = [];
+      const faculties = data.map((event) => {
+        return event.dataValues.userData.facultyCode;
+      });
+      for (let code = 1; code <= 5; code++) {
+        const totalFaculty = faculties.reduce(
+          (count, i) => (i === code ? count + 1 : count),
+          0
+        );
+        response.push({ code, totalFaculty });
+      }
+      resolve({
+        success: data ? true : false,
+        mess: data ? "Get data successfull" : "Not",
+        response: response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

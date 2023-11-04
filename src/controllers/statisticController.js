@@ -28,3 +28,13 @@ export const byAgeOfEvent = async (req, res) => {
     console.log(error);
   }
 };
+
+export const byFaculty = async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const response = await services.byFaculty(eventId);
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+  }
+};

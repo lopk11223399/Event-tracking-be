@@ -17,3 +17,12 @@ export const insertDataEvent = async (req, res) => {
     return error;
   }
 };
+
+export const insertFaculty = async (req, res) => {
+  try {
+    const response = await services.insertFaculty();
+    return res.status(200).json(response);
+  } catch (error) {
+    return error;
+  }
+};

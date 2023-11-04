@@ -10,6 +10,7 @@ export const updateStatusEvent = (eventId, body) => {
         { where: { id: eventId } }
       );
       const date = await db.Event.findOne({ where: { id: eventId } });
+
       if (Number(body.status) === 2) {
         const start = new CronJob(
           date.dataValues.startDate,

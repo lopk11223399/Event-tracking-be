@@ -43,11 +43,11 @@ export const createEvent = (body, id, fileData) => {
           true,
           "Asia/Ho_Chi_Minh"
         );
-        createRoom(
-          response.dataValues.id,
-          JSON.parse(body.rooms),
-          response.dataValues.typeEvent
-        );
+        // createRoom(
+        //   response.dataValues.id,
+        //   JSON.parse(body.rooms),
+        //   response.dataValues.typeEvent
+        // );
       }
       resolve({
         success: response ? true : false,

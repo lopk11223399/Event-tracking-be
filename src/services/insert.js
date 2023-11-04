@@ -21,6 +21,7 @@ export const insertDataUser = () =>
           email: student.slug + "@dtu.edu.vn",
           password: hashPassword("12345678"),
           gender: student.gender === "Nam" ? false : true,
+          facultyCode: [1, 2, 3, 4, 5][Math.floor(Math.random() * 4)],
         });
         await db.Student.create({
           studentId: response.dataValues.id,
@@ -52,6 +53,18 @@ export const insertDataEvent = () =>
             "30, Đường Nguyễn Hữu Thọ, Phường Hòa Thuận Tây, Quận Hải Châu, Đà Nẵng, Việt Nam",
           limitParticipant: 50,
         });
+      });
+      resolve("ok");
+    } catch (e) {
+      reject(e);
+    }
+  });
+
+export const insertFaculty = () =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const data = await db.User.update({
+        facultyCode: [1, 2][Math.floor(Math.random() * 4)],
       });
       resolve("ok");
     } catch (e) {
