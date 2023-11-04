@@ -623,6 +623,78 @@ export const scanQR = (body) => {
   });
 };
 
+export const getAllEventOfAuthor = (authorId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.Event.findAll({
+        where: { authorId: authorId },
+        include: [
+          {
+            model: db.User,
+            as: "author",
+            attributes: ["id", "name", "email", "avatar"],
+          },
+          {
+            model: db.User,
+            as: "followers",
+            attributes: ["id", "name", "email", "avatar"],
+          },
+          {
+            model: db.User,
+            as: "userJoined",
+            attributes: ["id", "name", "email", "avatar"],
+          },
+          {
+            model: db.Status,
+            as: "statusEvent",
+            attributes: ["id", "statusName"],
+          },
+          {
+            model: db.OfflineEvent,
+            as: "offlineEvent",
+          },
+          {
+            model: db.OnlineEvent,
+            as: "onlineEvent",
+          },
+        ],
+      });
+
+      response.forEach((event) => {
+        event.dataValues.onlineEvent.length === 0
+          ? (event.dataValues.onlineEvent = null)
+          : event.dataValues.onlineEvent;
+
+        event.dataValues.offlineEvent.length === 0
+          ? (event.dataValues.offlineEvent = null)
+          : event.dataValues.offlineEvent;
+      });
+
+      response.forEach((event) => {
+        event.dataValues.followers.forEach((follower) => {
+          delete follower.dataValues.ListEventFollow;
+        });
+      });
+
+      response.forEach((event) => {
+        event.dataValues.userJoined.forEach((user) => {
+          const userJoined = user.dataValues.ListPeopleJoin;
+          user.dataValues.roomId = userJoined.roomId;
+
+          delete user.dataValues.ListPeopleJoin;
+        });
+      });
+      resolve({
+        success: response ? true : false,
+        mess: response ? "Get data success" : "Get data failure",
+        response: response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 // export const test = () => {
 //   return new Promise(async (resolve, reject) => {
 //     try {

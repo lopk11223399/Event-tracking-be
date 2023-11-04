@@ -10,11 +10,10 @@ router.get("/get-all-event", controllers.getAllEvent);
 router.get("/detail-event/:id", controllers.getEvent);
 
 router.use(verifyToken);
-
-router.delete("/delete-event", isAdmin, controllers.deleteEvent);
 router.put("/scanQr", controllers.scanQR);
 
 router.put("/cancel-event/:eventId", isCreator, controllers.cancelEvent);
+router.get("/get-event-author", isCreator, controllers.getAllEventOfAuthor);
 router.post(
   "/",
   uploadEvent.single("image"),
@@ -27,5 +26,7 @@ router.put(
   isCreator,
   controllers.updateEvent
 );
+
+router.delete("/delete-event", isAdmin, controllers.deleteEvent);
 
 module.exports = router;
