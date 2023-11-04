@@ -82,7 +82,7 @@ export const scanQR = async (req, res) => {
 export const getAllEventOfAuthor = async (req, res) => {
   try {
     const { id } = req.user;
-    const response = await services.getAllEventOfAuthor(id);
+    const response = await services.getAllEventOfAuthor(id, req.query);
     return res.status(200).json(response);
   } catch (error) {
     console.log(error);

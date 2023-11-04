@@ -623,11 +623,13 @@ export const scanQR = (body) => {
   });
 };
 
-export const getAllEventOfAuthor = (authorId) => {
+export const getAllEventOfAuthor = (authorId, { title, ...query }) => {
   return new Promise(async (resolve, reject) => {
     try {
+      if (title) query.title = { [Op.substring]: title };
       const response = await db.Event.findAll({
-        where: { authorId: authorId },
+        where: { authorId: authorId, ...query },
+        order: [["createdAt", "DESC"]],
         include: [
           {
             model: db.User,

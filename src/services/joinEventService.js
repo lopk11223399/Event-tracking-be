@@ -11,27 +11,39 @@ export const joinEvent = (userId, eventId, roomId) => {
       const isJoin = await db.ListPeopleJoin.findOne({
         where: { [Op.and]: [{ userId: userId }, { eventId: eventId }] },
       });
-      if (isJoin) {
-        const response = await db.ListPeopleJoin.destroy({
-          where: { [Op.and]: [{ userId: userId }, { eventId: eventId }] },
-        });
-        resolve({
-          success: response ? true : false,
-          mess: response
-            ? "Đã hủy than gia sự kiện này"
-            : "Đã xảy ra lỗi gì đó vui lòng thử lại",
-        });
+      const checkEvent = await db.Event.findOne({ where: { id: eventId } });
+      console.log(checkEvent.dataValues.status);
+      if (
+        checkEvent.dataValues.status !== 4 &&
+        checkEvent.dataValues.status !== 5
+      ) {
+        if (isJoin) {
+          const response = await db.ListPeopleJoin.destroy({
+            where: { [Op.and]: [{ userId: userId }, { eventId: eventId }] },
+          });
+          resolve({
+            success: response ? true : false,
+            mess: response
+              ? "Đã hủy than gia sự kiện này"
+              : "Đã xảy ra lỗi gì đó vui lòng thử lại",
+          });
+        } else {
+          const response = await db.ListPeopleJoin.create({
+            UserId: userId,
+            EventId: eventId,
+            roomId: roomId ? roomId : 1,
+          });
+          resolve({
+            success: response ? true : false,
+            mess: response
+              ? "Đã tham gia sự kiện thành công"
+              : "Đã có lỗi gì đó xảy ra",
+          });
+        }
       } else {
-        const response = await db.ListPeopleJoin.create({
-          UserId: userId,
-          EventId: eventId,
-          roomId: roomId ? roomId : 1,
-        });
         resolve({
-          success: response ? true : false,
-          mess: response
-            ? "Đã tham gia sự kiện thành công"
-            : "Đã có lỗi gì đó xảy ra",
+          success: false,
+          mess: "Sự kiện đã kết thúc hoặc đã bị hủy",
         });
       }
     } catch (error) {
