@@ -542,61 +542,77 @@ export const cancelEvent = (authorId, eventId) => {
   });
 };
 
-export const deleteEvent = (eventId) => {
+export const deleteEventByAdminAndCreator = (roleId, body) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await db.Event.findAll({
-        where: { id: eventId },
-        attributes: ["id"],
-        include: [
-          {
-            model: db.ListEventFollow,
-            as: "followerData",
-            attributes: ["userId"],
-          },
-          {
-            model: db.ListPeopleJoin,
-            as: "peopleData",
-            attributes: ["userId"],
-          },
-        ],
-      });
-      const deleteEvent = await db.Event.destroy({ where: { id: eventId } });
-      response[0].dataValues.followerData.forEach(async (follower) => {
-        await db.ListEventFollow.destroy({
-          where: {
-            [Op.and]: [
-              { UserId: follower.dataValues.userId },
-              { EventId: eventId },
-            ],
-          },
+      const Ids = body.eventIds;
+
+      Ids.forEach(async (id) => {
+        const data = await db.Event.findAll({
+          where: { id: id.eventId },
+          attributes: ["id", "authorId"],
+          include: [
+            {
+              model: db.ListEventFollow,
+              as: "followerData",
+              attributes: ["userId"],
+            },
+            {
+              model: db.ListPeopleJoin,
+              as: "peopleData",
+              attributes: ["userId"],
+            },
+          ],
         });
-        await db.Notification.create({
-          userId: follower.dataValues.userId,
-          eventId: eventId,
-          notification_code: 1,
-          content: "Sự kiện đã bị hủy", // cần xem lại cái này có cần thiết không
+        const deleteEvent = await db.Event.destroy({
+          where: { id: id.eventId },
         });
-      });
-      response[0].dataValues.peopleData.forEach(async (people) => {
-        await db.ListPeopleJoin.destroy({
-          where: {
-            [Op.and]: [
-              { UserId: people.dataValues.userId },
-              { EventId: eventId },
-            ],
-          },
+        console.log(data[0].dataValues.authorId);
+        if (roleId === 1) {
+          await db.Notification.create({
+            userId: data[0].dataValues.authorId,
+            eventId: id.eventId,
+            notification_code: 1,
+            content: "Sự kiện đã bị hủy",
+          });
+        }
+        data[0].dataValues.followerData.forEach(async (follower) => {
+          await db.ListEventFollow.destroy({
+            where: {
+              [Op.and]: [
+                { UserId: follower.dataValues.userId },
+                { EventId: id.eventId },
+              ],
+            },
+          });
+          await db.Notification.create({
+            userId: follower.dataValues.userId,
+            eventId: id.eventId,
+            notification_code: 1,
+            content: "Sự kiện đã bị hủy", // cần xem lại cái này có cần thiết không
+          });
         });
-        await db.Notification.create({
-          userId: people.dataValues.userId,
-          eventId: eventId,
-          notification_code: 1,
-          content: "Sự kiện đã bị hủy",
+        data[0].dataValues.peopleData.forEach(async (people) => {
+          await db.ListPeopleJoin.destroy({
+            where: {
+              [Op.and]: [
+                { UserId: people.dataValues.userId },
+                { EventId: id.eventId },
+              ],
+            },
+          });
+          await db.Notification.create({
+            userId: people.dataValues.userId,
+            eventId: id.eventId,
+            notification_code: 1,
+            content: "Sự kiện đã bị hủy",
+          });
         });
-      });
-      resolve({
-        success: deleteEvent ? true : false,
-        mess: deleteEvent ? "Xóa thành công" : "Có lỗi gì đó đã xảy ra",
+
+        resolve({
+          success: deleteEvent ? true : false,
+          mess: deleteEvent ? "Xóa thành công" : "Có lỗi gì đó đã xảy ra",
+        });
       });
     } catch (error) {
       reject(error);

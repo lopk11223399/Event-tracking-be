@@ -60,10 +60,13 @@ export const cancelEvent = async (req, res) => {
   }
 };
 
-export const deleteEvent = async (req, res) => {
+export const deleteEventByAdminAndCreator = async (req, res) => {
   try {
-    const { eventId } = req.params;
-    const response = await services.deleteEvent(Number(eventId));
+    const { roleId } = req.user;
+    const response = await services.deleteEventByAdminAndCreator(
+      roleId,
+      req.body
+    );
     return res.status(200).json(response);
   } catch (error) {
     console.log(error);
