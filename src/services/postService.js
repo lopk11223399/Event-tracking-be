@@ -624,13 +624,28 @@ export const scanQR = (body) => {
   });
 };
 
-export const getAllEventOfAuthor = (authorId, { title, ...query }) => {
+export const getAllEventOfAuthor = (
+  authorId,
+  { title, status, limit, page, ...query }
+) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const queries = { raw: false, nest: true };
+      const offset = !page || +page <= 1 ? 0 : +page - 1;
+      const fLimit = +limit;
+      if (limit) {
+        queries.offset = offset * fLimit;
+        queries.limit = fLimit;
+      }
       if (title) query.title = { [Op.substring]: title };
+      if (status) {
+        let statusess = status.map((item) => Number(item));
+        query.status = { [Op.or]: statusess };
+      }
       const response = await db.Event.findAll({
         where: { authorId: authorId, ...query },
         order: [["createdAt", "DESC"]],
+        ...queries,
         include: [
           {
             model: db.User,
