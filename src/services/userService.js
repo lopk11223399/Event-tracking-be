@@ -20,7 +20,7 @@ export const createUserByAdmin = ({ username, password }) =>
         studentId: response[0].dataValues.id,
       });
       resolve({
-        success: response[1] ? 0 : 1,
+        success: response[1] ? true : false,
         mess: response[1] ? "Create user success!!" : "username is exist",
       });
     } catch (error) {
@@ -64,7 +64,7 @@ export const getAllUsers = ({ page, limit, name, order, id, ...query }) => {
         ],
       });
       resolve({
-        success: response ? 0 : 1,
+        success: response ? true : false,
         mess: response ? "Got data" : "No data",
         response: response,
       });
@@ -149,7 +149,7 @@ export const updateUser = (body, userId, fileData) => {
         },
       });
       resolve({
-        success: response[0] > 0 && response1[0] > 0 ? 0 : 1,
+        success: response[0] > 0 && response1[0] > 0 ? true : false,
         mess:
           response[0] > 0 && response1[0] > 0 ? "Update successfully" : "not",
       });
@@ -177,7 +177,7 @@ export const updateInfoAdmin = (body, userId, fileData) => {
         where: { id: userId },
       });
       resolve({
-        success: response[0] > 0 ? 0 : 1,
+        success: response[0] > 0 ? true : false,
         mess: response[0] > 0 ? "Update successfully" : "not",
       });
     } catch (error) {
@@ -186,19 +186,35 @@ export const updateInfoAdmin = (body, userId, fileData) => {
   });
 };
 
-export const deleteUserByAdmin = (userId) => {
+export const deleteUserByAdminAndCreator = (roleId, body) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response1 = await db.Student.destroy({
-        where: { studentId: userId },
-      });
-      const response = await db.User.destroy({
-        where: { id: userId },
-      });
-      resolve({
-        success: response ? 0 : 1,
-        mess: response ? "Delete successfully" : "not",
-      });
+      const Ids = body.userIds;
+      if (roleId === 1) {
+        Ids.forEach(async (id) => {
+          await db.Student.destroy({
+            where: { studentId: Number(id.userId) },
+          });
+
+          await db.User.destroy({
+            where: { id: Number(id.userId) },
+          });
+        });
+        resolve({
+          success: true,
+          mess: response ? "Delete successfully" : "not",
+        });
+      } else {
+        Ids.forEach(async (id) => {
+          await db.ListPeopleJoin.destroy({
+            where: { userId: Number(id.userId), eventId: body.eventId },
+          });
+        });
+        resolve({
+          sucess: true,
+          mess: "Delete successfully",
+        });
+      }
     } catch (error) {
       reject(error);
     }

@@ -142,7 +142,7 @@ export const refreshToken = (refresh_token) =>
           (err) => {
             if (err)
               resolve({
-                success: 1,
+                success: false,
                 mess: "Refresh token expired. Require login again!!",
               });
             else {
@@ -156,7 +156,7 @@ export const refreshToken = (refresh_token) =>
                 { expiresIn: "7d" }
               );
               resolve({
-                success: accessToken ? 0 : 1,
+                success: accessToken ? true : false,
                 mess: accessToken ? "Ok" : "Fail to generate new access token",
                 // access_token: accessToken ? `Bearer ${accessToken}`: accessToken,
                 token: accessToken ? `${accessToken}` : accessToken,

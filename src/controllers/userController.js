@@ -61,10 +61,13 @@ export const updateInfoAdmin = async (req, res) => {
   }
 };
 
-export const deleteUserByAdmin = async (req, res) => {
+export const deleteUserByAdminAndCreator = async (req, res) => {
   try {
-    const { id } = req.params;
-    const response = await services.deleteUserByAdmin(id);
+    const { roleId } = req.user;
+    const response = await services.deleteUserByAdminAndCreator(
+      roleId,
+      req.body
+    );
     return res.status(200).json(response);
   } catch (error) {
     console.log(error);
