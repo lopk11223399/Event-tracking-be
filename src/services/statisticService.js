@@ -147,3 +147,55 @@ export const byFaculty = (eventId) => {
     }
   });
 };
+
+export const fivePeopleHot = (authorId, { ...query }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const totalEvent = await db.Event.findAll({
+        where: { authorId: authorId },
+        attributes: ["id"],
+      });
+      const Ids = totalEvent.map((item) => {
+        return item.dataValues.id;
+      });
+      const response = await db.ListPeopleJoin.findAll({
+        attributes: [
+          "userId",
+          [sequelize.fn("COUNT", sequelize.col("eventId")), "eventCount"],
+        ],
+        where: {
+          eventId: {
+            [Op.in]: Ids,
+          },
+          isJoined: true,
+        },
+        group: ["userId"],
+        include: [
+          {
+            model: db.User,
+            as: "userData",
+            attributes: {
+              exclude: [
+                "password",
+                "username",
+                "roleId",
+                "refresh_token",
+                "fileName",
+                "createdAt",
+                "updatedAt",
+              ],
+            },
+          },
+        ],
+      });
+
+      resolve({
+        success: response ? true : false,
+        mess: response ? "Get data successfull" : "Not",
+        response: response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

@@ -26,3 +26,12 @@ export const insertFaculty = async (req, res) => {
     return error;
   }
 };
+
+export const insertComment = async (req, res) => {
+  try {
+    const response = await services.insertComment();
+    return res.status(200).json(response);
+  } catch (error) {
+    return error;
+  }
+};

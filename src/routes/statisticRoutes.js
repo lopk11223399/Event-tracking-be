@@ -10,5 +10,6 @@ router.get("/", isAdmin, controllers.eventByMonth);
 router.get("/by-faculty/:eventId", isAdmin, controllers.byFaculty);
 router.get("/by-gender/:eventId", isCreator, controllers.byGenderOfEvent);
 router.get("/by-age/:eventId", isCreator, controllers.byAgeOfEvent);
+router.get("/5-people-hot", isCreator, controllers.fivePeopleHot);
 
 module.exports = router;

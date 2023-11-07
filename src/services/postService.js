@@ -34,24 +34,25 @@ export const createEvent = (body, id, fileData) => {
           });
         });
 
-        const job = new CronJob(
-          response.dataValues.startDate,
-          function () {
-            cancelEvent(id, response.id);
-          },
-          null,
-          true,
-          "Asia/Ho_Chi_Minh"
-        );
-        // createRoom(
-        //   response.dataValues.id,
-        //   JSON.parse(body.rooms),
-        //   response.dataValues.typeEvent
+        // const job = new CronJob(
+        //   response.dataValues.startDate,
+        //   function () {
+        //     cancelEvent(id, response.id);
+        //   },
+        //   null,
+        //   true,
+        //   "Asia/Ho_Chi_Minh"
         // );
+        createRoom(
+          response.dataValues.id,
+          JSON.parse(body.rooms),
+          // body.rooms,
+          response.dataValues.typeEvent
+        );
       }
       resolve({
         success: response ? true : false,
-        mess: response ? "Created event successfull" : "not",
+        mess: response ? "Tạo sự kiện thành công" : "Đã có lỗi gì đó xảy ra",
         response: response,
       });
     } catch (error) {
@@ -146,7 +147,7 @@ const createRoom = async (eventId, rooms, typeEvent) => {
             eventId: eventId,
             roomId: roomID,
             topic: room.topic,
-            linkRoomUrl: room.numberRoom,
+            linkRoomUrl: room.linkRoomUrl,
             timeRoom: room.timeRoom,
           });
           qrCode.toDataURL(
@@ -379,24 +380,24 @@ export const getEvent = (eventId) => {
             as: "feedback",
             attributes: ["id", "name", "email", "avatar"],
           },
-          {
-            model: db.User,
-            as: "commentEvent",
-            attributes: ["id", "name", "email", "avatar"],
-            include: [
-              {
-                model: db.ResponseComment,
-                as: "responseData",
-                attributes: ["response", "commentId", "createdAt", "userId"],
-                include: [
-                  {
-                    model: db.User,
-                    as: "userData",
-                  },
-                ],
-              },
-            ],
-          },
+          // {
+          //   model: db.User,
+          //   as: "commentEvent",
+          //   attributes: ["id", "name", "email", "avatar"],
+          //   include: [
+          //     {
+          //       model: db.ResponseComment,
+          //       as: "responseData",
+          //       attributes: ["response", "commentId", "createdAt", "userId"],
+          //       include: [
+          //         {
+          //           model: db.User,
+          //           as: "userData",
+          //         },
+          //       ],
+          //     },
+          //   ],
+          // },
           {
             model: db.OfflineEvent,
             as: "offlineEvent",
@@ -427,21 +428,21 @@ export const getEvent = (eventId) => {
         delete follower.dataValues.ListEventFollow;
       });
 
-      response.dataValues.commentEvent.forEach((comment) => {
-        const listComment = comment.dataValues.Comment;
+      // response.dataValues.commentEvent.forEach((comment) => {
+      //   const listComment = comment.dataValues.Comment;
 
-        const listResponse = comment.dataValues.responseData.userData;
+      //   const listResponse = comment.dataValues.responseData.userData;
 
-        comment.dataValues.comment = listComment.comment;
-        comment.dataValues.createdAt = listComment.createdAt;
+      //   comment.dataValues.comment = listComment.comment;
+      //   comment.dataValues.createdAt = listComment.createdAt;
 
-        comment.dataValues.responseData.dataValues.name = listResponse.name;
-        comment.dataValues.responseData.dataValues.avatar = listResponse.avatar;
-        comment.dataValues.responseData.dataValues.email = listResponse.email;
+      //   comment.dataValues.responseData.dataValues.name = listResponse.name;
+      //   comment.dataValues.responseData.dataValues.avatar = listResponse.avatar;
+      //   comment.dataValues.responseData.dataValues.email = listResponse.email;
 
-        delete comment.dataValues.Comment;
-        delete comment.dataValues.responseData.dataValues.userData;
-      });
+      //   delete comment.dataValues.Comment;
+      //   delete comment.dataValues.responseData.dataValues.userData;
+      // });
 
       response.dataValues.feedback.forEach((feedback) => {
         const listFeedback = feedback.dataValues.Feedback;
