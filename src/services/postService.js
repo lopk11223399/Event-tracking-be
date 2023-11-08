@@ -66,7 +66,7 @@ const createRoom = async (eventId, rooms, typeEvent) => {
   try {
     let roomID = 0;
     if (typeEvent === false) {
-      if (!rooms) {
+      if (rooms.length === 0) {
         const response = await db.OfflineEvent.create({
           eventId: eventId,
           roomId: roomID + 1,
@@ -118,7 +118,7 @@ const createRoom = async (eventId, rooms, typeEvent) => {
         });
       }
     } else {
-      if (!rooms) {
+      if (rooms.length === 0) {
         const response = await db.OnlineEvent.create({
           eventId: eventId,
           roomId: roomID + 1,
