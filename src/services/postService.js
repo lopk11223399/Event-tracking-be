@@ -292,7 +292,7 @@ export const getAllEvent = ({
           },
         ],
         attributes: {
-          exclude: ["fileNameImage", "fileNameQr", "updatedAt"],
+          exclude: ["fileNameImage", "updatedAt"],
         },
       });
       response.rows.forEach((event) => {
@@ -657,7 +657,7 @@ export const getAllEventOfAuthor = (
         let statusess = status.map((item) => Number(item));
         query.status = { [Op.or]: statusess };
       }
-      const response = await db.Event.findAll({
+      const response = await db.Event.findAndCountAll({
         where: { authorId: authorId, ...query },
         order: [["createdAt", "DESC"]],
         ...queries,
@@ -693,7 +693,7 @@ export const getAllEventOfAuthor = (
         ],
       });
 
-      response.forEach((event) => {
+      response.rows.forEach((event) => {
         event.dataValues.onlineEvent.length === 0
           ? (event.dataValues.onlineEvent = null)
           : event.dataValues.onlineEvent;
@@ -703,13 +703,13 @@ export const getAllEventOfAuthor = (
           : event.dataValues.offlineEvent;
       });
 
-      response.forEach((event) => {
+      response.rows.forEach((event) => {
         event.dataValues.followers.forEach((follower) => {
           delete follower.dataValues.ListEventFollow;
         });
       });
 
-      response.forEach((event) => {
+      response.rows.forEach((event) => {
         event.dataValues.userJoined.forEach((user) => {
           const userJoined = user.dataValues.ListPeopleJoin;
           user.dataValues.roomId = userJoined.roomId;
@@ -720,7 +720,8 @@ export const getAllEventOfAuthor = (
       resolve({
         success: response ? true : false,
         mess: response ? "Get data success" : "Get data failure",
-        response: response,
+        response: response.rows,
+        count: response.count,
       });
     } catch (error) {
       reject(error);
