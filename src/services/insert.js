@@ -50,7 +50,7 @@ export const insertDataEvent = () =>
           typeEvent: event.typeEvent,
           status: event.status,
           linkUrl: event.linkUrl,
-          totalRate: event.totalRate,
+          totalRate: [1, 2, 3, 4, 5][Math.floor(Math.random() * 4)],
           addPoint: event.addPoint,
           authorId: [1, 2, 3, 4, 5][Math.floor(Math.random() * 4)],
           location: event.location,

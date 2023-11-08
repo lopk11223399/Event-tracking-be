@@ -199,3 +199,38 @@ export const fivePeopleHot = (authorId, { ...query }) => {
     }
   });
 };
+
+export const totalRateOfAuthor = (authorId, { month, year, ...query }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (year) {
+        query.startDate = {
+          [Op.between]: [moment(year), moment(year).endOf("year")],
+        };
+      }
+      const data = await db.Event.findAll({
+        where: { authorId: authorId, ...query },
+      });
+      const rates = data.map((item) => {
+        return item.dataValues.totalRate;
+      });
+      console.log(rates);
+      const response = [];
+      for (let rate = 1; rate <= 5; rate++) {
+        const totalRate = rates.reduce(
+          (count, i) => (Math.round(i) === rate ? count + 1 : count),
+          0
+        );
+        response.push({ rate, totalRate });
+      }
+
+      resolve({
+        success: response ? true : false,
+        mess: response ? "Get data successfull" : "Not",
+        response: response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

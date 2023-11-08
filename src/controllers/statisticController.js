@@ -48,3 +48,13 @@ export const fivePeopleHot = async (req, res) => {
     console.log(error);
   }
 };
+
+export const totalRateOfAuthor = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const response = await services.totalRateOfAuthor(id, req.query);
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+  }
+};

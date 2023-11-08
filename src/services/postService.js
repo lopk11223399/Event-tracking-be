@@ -547,9 +547,9 @@ export const deleteEventByAdminAndCreator = (roleId, body) => {
     try {
       const Ids = body.eventIds;
 
-      Ids.forEach(async (id) => {
+      Ids.forEach(async (eventId) => {
         const data = await db.Event.findAll({
-          where: { id: id.eventId },
+          where: { id: Number(eventId) },
           attributes: ["id", "authorId"],
           include: [
             {
@@ -565,13 +565,12 @@ export const deleteEventByAdminAndCreator = (roleId, body) => {
           ],
         });
         const deleteEvent = await db.Event.destroy({
-          where: { id: id.eventId },
+          where: { id: Number(eventId) },
         });
-        console.log(data[0].dataValues.authorId);
         if (roleId === 1) {
           await db.Notification.create({
             userId: data[0].dataValues.authorId,
-            eventId: id.eventId,
+            eventId: Number(eventId),
             notification_code: 1,
             content: "Sự kiện đã bị hủy",
           });
@@ -581,13 +580,13 @@ export const deleteEventByAdminAndCreator = (roleId, body) => {
             where: {
               [Op.and]: [
                 { UserId: follower.dataValues.userId },
-                { EventId: id.eventId },
+                { EventId: Number(eventId) },
               ],
             },
           });
           await db.Notification.create({
             userId: follower.dataValues.userId,
-            eventId: id.eventId,
+            eventId: Number(eventId),
             notification_code: 1,
             content: "Sự kiện đã bị hủy", // cần xem lại cái này có cần thiết không
           });
@@ -597,13 +596,13 @@ export const deleteEventByAdminAndCreator = (roleId, body) => {
             where: {
               [Op.and]: [
                 { UserId: people.dataValues.userId },
-                { EventId: id.eventId },
+                { EventId: Number(eventId) },
               ],
             },
           });
           await db.Notification.create({
             userId: people.dataValues.userId,
-            eventId: id.eventId,
+            eventId: Number(eventId),
             notification_code: 1,
             content: "Sự kiện đã bị hủy",
           });
