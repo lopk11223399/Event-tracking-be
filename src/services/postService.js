@@ -664,7 +664,7 @@ export const scanQR = (body) => {
 
 export const getAllEventOfAuthor = (
   authorId,
-  { title, status, limit, page, ...query }
+  { title, eventIds, status, limit, page, ...query }
 ) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -675,6 +675,10 @@ export const getAllEventOfAuthor = (
       if (limit) {
         queries.offset = offset * fLimit;
         queries.limit = fLimit;
+      }
+      if (eventIds) {
+        let ids = eventIds.split(",").map((item) => Number(item));
+        query.id = { [Op.or]: ids };
       }
       if (title) query.title = { [Op.substring]: title };
       if (status) {
