@@ -191,13 +191,13 @@ export const deleteUserByAdminAndCreator = (roleId, body) => {
     try {
       const Ids = body.userIds;
       if (roleId === 1) {
-        Ids.forEach(async (id) => {
+        Ids.forEach(async (userId) => {
           await db.Student.destroy({
-            where: { studentId: Number(id.userId) },
+            where: { studentId: Number(userId) },
           });
 
           await db.User.destroy({
-            where: { id: Number(id.userId) },
+            where: { id: Number(userId) },
           });
         });
         resolve({
@@ -205,9 +205,9 @@ export const deleteUserByAdminAndCreator = (roleId, body) => {
           mess: response ? "Delete successfully" : "not",
         });
       } else {
-        Ids.forEach(async (id) => {
+        Ids.forEach(async (userId) => {
           await db.ListPeopleJoin.destroy({
-            where: { userId: Number(id.userId), eventId: body.eventId },
+            where: { userId: Number(userId), eventId: body.eventId },
           });
         });
         resolve({

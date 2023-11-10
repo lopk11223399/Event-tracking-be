@@ -178,11 +178,11 @@ const createRoom = async (eventId, rooms, typeEvent) => {
 export const updateEvent = (body, eventId, fileData) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const fileName = await db.Event.findAll({
+      const data = await db.Event.findAll({
         where: { id: eventId },
       });
-      if (fileName)
-        cloudinary.api.delete_resources(fileName[0].dataValues.fileNameImage);
+      if (data)
+        cloudinary.api.delete_resources(data[0].dataValues.fileNameImage);
 
       if (fileData) {
         body.image = fileData?.path;
@@ -191,9 +191,19 @@ export const updateEvent = (body, eventId, fileData) => {
       const response = await db.Event.update(body, {
         where: { id: eventId },
       });
+      if (response[0] > 0) {
+        updateRoom(
+          eventId,
+          JSON.parse(body.rooms),
+          data[0].dataValues.typeEvent
+        );
+      }
       resolve({
         success: response[0] > 0 ? true : false,
-        mess: response[0] > 0 ? "Update event successfull" : "not",
+        mess:
+          response[0] > 0
+            ? "Cập nhật sự kiện thành công"
+            : "Đã có lỗi gì đó xảy ra",
       });
       if (fileData && !response[0] === 0)
         cloudinary.uploader.destroy(fileData.filename);
@@ -202,6 +212,19 @@ export const updateEvent = (body, eventId, fileData) => {
       if (fileData) cloudinary.uploader.destroy(fileData.filename);
     }
   });
+};
+
+const updateRoom = async (eventId, rooms, typeEvent) => {
+  if (typeEvent === false) {
+    await db.OfflineEvent.destroy({
+      where: { eventId: eventId },
+    });
+  } else {
+    await db.OnlineEvent.destroy({
+      where: { eventId: eventId },
+    });
+  }
+  createRoom(eventId, rooms, typeEvent);
 };
 
 export const getAllEvent = ({
@@ -648,6 +671,7 @@ export const getAllEventOfAuthor = (
       const queries = { raw: false, nest: true };
       const offset = !page || +page <= 1 ? 0 : +page - 1;
       const fLimit = +limit;
+      queries.distinct = true;
       if (limit) {
         queries.offset = offset * fLimit;
         queries.limit = fLimit;
