@@ -140,18 +140,19 @@ export const updateUser = (body, userId, fileData) => {
         where: { id: userId },
         fields: myFields,
       });
-      const response1 = await db.Student.update(body, {
-        where: { studentId: userId },
-        defaults: {
-          classCode: body.classCode,
-          program: body.program,
-          studentCode: body.studentCode,
-        },
-      });
+      if (response[0] > 0) {
+        const response1 = await db.Student.update(body, {
+          where: { studentId: userId },
+          defaults: {
+            classCode: body.classCode,
+            program: body.program,
+            studentCode: body.studentCode,
+          },
+        });
+      }
       resolve({
-        success: response[0] > 0 && response1[0] > 0 ? true : false,
-        mess:
-          response[0] > 0 && response1[0] > 0 ? "Update successfully" : "not",
+        success: response[0] > 0 ? true : false,
+        mess: response[0] > 0 ? "Update successfully" : "not",
       });
       if (fileData && !response[0] === 0)
         cloudinary.uploader.destroy(fileData.filename);
