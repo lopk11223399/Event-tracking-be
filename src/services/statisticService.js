@@ -28,7 +28,7 @@ export const eventByMonth = ({ year, ...query }) => {
 
       resolve({
         success: response ? true : false,
-        mess: response ? "Get data successfull" : "Not",
+        mess: response ? "Get data successfull" : "Đã có lỗi gì đó xảy ra",
         response: response,
       });
     } catch (error) {
@@ -74,7 +74,7 @@ export const byGenderOfEvent = (eventId) => {
       });
       resolve({
         success: data ? true : false,
-        mess: data ? "Get data successfull" : "Not",
+        mess: data ? "Get data successfull" : "Đã có lỗi gì đó xảy ra",
         response: response,
       });
     } catch (error) {
@@ -106,7 +106,7 @@ export const byAgeOfEvent = (eventId) => {
 
       resolve({
         success: data ? true : false,
-        mess: data ? "Get data successfull" : "Not",
+        mess: data ? "Get data successfull" : "Đã có lỗi gì đó xảy ra",
         response: data,
       });
     } catch (error) {
@@ -139,7 +139,7 @@ export const byFaculty = (eventId) => {
       }
       resolve({
         success: data ? true : false,
-        mess: data ? "Get data successfull" : "Not",
+        mess: data ? "Get data successfull" : "Đã có lỗi gì đó xảy ra",
         response: response,
       });
     } catch (error) {
@@ -191,7 +191,7 @@ export const fivePeopleHot = (authorId, { ...query }) => {
 
       resolve({
         success: response ? true : false,
-        mess: response ? "Get data successfull" : "Not",
+        mess: response ? "Get data successfull" : "Đã có lỗi gì đó xảy ra",
         response: response,
       });
     } catch (error) {

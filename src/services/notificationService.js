@@ -29,7 +29,9 @@ export const getNotifications = (userId, { page, limit, code, ...query }) => {
       });
       resolve({
         success: response ? true : false,
-        mess: response ? "Get Notification successfull" : "not",
+        mess: response
+          ? "Get Notification successfull"
+          : "Đã có lỗi gì đó xảy ra",
         response: response,
       });
     } catch (error) {
@@ -51,7 +53,10 @@ export const updateNotification = (userId, eventId) => {
         );
         resolve({
           success: response[0] > 0 ? true : false,
-          mess: response[0] > 0 ? "Update notification successfull" : "not",
+          mess:
+            response[0] > 0
+              ? "Update notification successfull"
+              : "Đã có lỗi gì đó xảy ra",
         });
       }
     } catch (error) {

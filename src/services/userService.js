@@ -152,7 +152,8 @@ export const updateUser = (body, userId, fileData) => {
       }
       resolve({
         success: response[0] > 0 ? true : false,
-        mess: response[0] > 0 ? "Update successfully" : "not",
+        mess:
+          response[0] > 0 ? "Cập nhật thành công" : "Đã có lỗi gì đó xảy ra",
       });
       if (fileData && !response[0] === 0)
         cloudinary.uploader.destroy(fileData.filename);
@@ -179,7 +180,8 @@ export const updateInfoAdmin = (body, userId, fileData) => {
       });
       resolve({
         success: response[0] > 0 ? true : false,
-        mess: response[0] > 0 ? "Update successfully" : "not",
+        mess:
+          response[0] > 0 ? "Cập nhật thành công" : "Đã có lỗi gì đó xảy ra",
       });
     } catch (error) {
       reject(error);
@@ -203,7 +205,7 @@ export const deleteUserByAdminAndCreator = (roleId, body) => {
         });
         resolve({
           success: true,
-          mess: response ? "Delete successfully" : "not",
+          mess: response ? "Delete successfully" : "Đã có lỗi gì đó xảy ra",
         });
       } else {
         Ids.forEach(async (userId) => {
