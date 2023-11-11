@@ -1,7 +1,6 @@
 import db from "../models";
 import { CronJob } from "cron";
 import { Op } from "sequelize";
-import moment from "moment";
 
 export const updateStatusEvent = (eventId, body) => {
   return new Promise(async (resolve, reject) => {
@@ -38,7 +37,7 @@ export const updateStatusEvent = (eventId, body) => {
           );
         }
         resolve({
-          err: response[0] > 0 ? true : false,
+          sucess: response[0] > 0 ? true : false,
           mess:
             response[0] > 0
               ? "Cập nhật trạng thái thành công"
@@ -46,7 +45,7 @@ export const updateStatusEvent = (eventId, body) => {
         });
       } else {
         resolve({
-          err: false,
+          sucess: false,
           mess: "Không thể cập nhật trạng thái sự kiện",
         });
       }
