@@ -1,46 +1,55 @@
 import db from "../models";
 import { CronJob } from "cron";
 import { Op } from "sequelize";
+import moment from "moment";
 
 export const updateStatusEvent = (eventId, body) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await db.Event.update(
-        { status: body.status },
-        { where: { id: eventId } }
-      );
-      const date = await db.Event.findOne({ where: { id: eventId } });
+      const data = await db.Event.findOne({ where: { id: eventId } });
+      if (data.dataValues.startDate > new Date()) {
+        const response = await db.Event.update(
+          { status: body.status },
+          { where: { id: eventId } }
+        );
+        const date = await db.Event.findOne({ where: { id: eventId } });
 
-      if (Number(body.status) === 2) {
-        const start = new CronJob(
-          date.dataValues.startDate,
-          function () {
-            notificationStart(eventId);
-            updateStatusEvent(eventId, { status: 3 });
-          },
-          null,
-          true,
-          "Asia/Ho_Chi_Minh"
-        );
-        const finish = new CronJob(
-          date.dataValues.finishDate,
-          function () {
-            notificationFinish(eventId);
-            updateStatusEvent(eventId, { status: 4 });
-            addPoint(eventId);
-          },
-          null,
-          true,
-          "Asia/Ho_Chi_Minh"
-        );
+        if (Number(body.status) === 2) {
+          const start = new CronJob(
+            date.dataValues.startDate,
+            function () {
+              notificationStart(eventId);
+              updateStatusEvent(eventId, { status: 3 });
+            },
+            null,
+            true,
+            "Asia/Ho_Chi_Minh"
+          );
+          const finish = new CronJob(
+            date.dataValues.finishDate,
+            function () {
+              notificationFinish(eventId);
+              updateStatusEvent(eventId, { status: 4 });
+              addPoint(eventId);
+            },
+            null,
+            true,
+            "Asia/Ho_Chi_Minh"
+          );
+        }
+        resolve({
+          err: response[0] > 0 ? true : false,
+          mess:
+            response[0] > 0
+              ? "Cập nhật trạng thái thành công"
+              : "Đã có lỗi gì đó xảy ra",
+        });
+      } else {
+        resolve({
+          err: false,
+          mess: "Không thể cập nhật trạng thái sự kiện",
+        });
       }
-      resolve({
-        err: response[0] > 0 ? true : false,
-        mess:
-          response[0] > 0
-            ? "Cập nhật trạng thái thành công"
-            : "Đã có lỗi gì đó xảy ra",
-      });
     } catch (error) {
       reject(error);
     }
