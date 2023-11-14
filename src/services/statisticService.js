@@ -169,6 +169,7 @@ export const fivePeopleHot = (authorId, { ...query }) => {
           },
           isJoined: true,
         },
+        limit: 5,
         group: ["userId"],
         include: [
           {
@@ -185,6 +186,13 @@ export const fivePeopleHot = (authorId, { ...query }) => {
                 "updatedAt",
               ],
             },
+            include: [
+              {
+                model: db.Student,
+                as: "studentData",
+                attributes: ["point"],
+              },
+            ],
           },
         ],
       });

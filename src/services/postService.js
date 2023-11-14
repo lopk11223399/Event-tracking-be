@@ -391,7 +391,14 @@ export const getEvent = (eventId) => {
           {
             model: db.User,
             as: "userJoined",
-            attributes: ["id", "name", "email", "avatar", "isJoined"],
+            attributes: ["id", "name", "facultyCode"],
+            include: [
+              {
+                model: db.Student,
+                as: "studentData",
+                attributes: ["studentCode"],
+              },
+            ],
           },
           {
             model: db.Status,
@@ -478,9 +485,13 @@ export const getEvent = (eventId) => {
 
       response.dataValues.userJoined.forEach((user) => {
         const userJoined = user.dataValues.ListPeopleJoin;
+        const student = user.dataValues.studentData;
 
-        user.dataValues.roomId = userJoined.roomId;
+        user.dataValues.studentCode = student.studentCode;
 
+        user.dataValues.isJoined = userJoined.isJoined;
+
+        delete user.dataValues.studentData;
         delete user.dataValues.ListPeopleJoin;
       });
 
