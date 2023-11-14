@@ -1,6 +1,7 @@
 import db from "../models";
 import { CronJob } from "cron";
 import { Op } from "sequelize";
+import moment from "moment";
 
 export const updateStatusEvent = (eventId, body) => {
   return new Promise(async (resolve, reject) => {
@@ -18,7 +19,7 @@ export const updateStatusEvent = (eventId, body) => {
             date.dataValues.startDate,
             function () {
               notificationStart(eventId);
-              updateStatusEvent(eventId, { status: 3 });
+              updateStartEvent(eventId);
             },
             null,
             true,
@@ -28,7 +29,7 @@ export const updateStatusEvent = (eventId, body) => {
             date.dataValues.finishDate,
             function () {
               notificationFinish(eventId);
-              updateStatusEvent(eventId, { status: 4 });
+              updateFinishEvent(eventId);
               addPoint(eventId);
             },
             null,
@@ -55,6 +56,14 @@ export const updateStatusEvent = (eventId, body) => {
   });
 };
 
+const updateStartEvent = async (eventId) => {
+  try {
+    await db.Event.update({ status: 3 }, { where: { id: eventId } });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const notificationStart = async (eventId) => {
   try {
     const people = await db.ListPeopleJoin.findAll({
@@ -67,6 +76,14 @@ const notificationStart = async (eventId) => {
         notification_code: 4,
       });
     });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateFinishEvent = async (eventId) => {
+  try {
+    await db.Event.update({ status: 4 }, { where: { id: eventId } });
   } catch (error) {
     console.log(error);
   }

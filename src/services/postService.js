@@ -34,15 +34,15 @@ export const createEvent = (body, id, fileData) => {
           });
         });
 
-        // const job = new CronJob(
-        //   response.dataValues.startDate,
-        //   function () {
-        //     cancelEvent(id, response.id);
-        //   },
-        //   null,
-        //   true,
-        //   "Asia/Ho_Chi_Minh"
-        // );
+        const job = new CronJob(
+          response.dataValues.startDate,
+          function () {
+            cancelEvent(id, response.id);
+          },
+          null,
+          true,
+          "Asia/Ho_Chi_Minh"
+        );
         createRoom(
           response.dataValues.id,
           JSON.parse(body.rooms),
