@@ -391,7 +391,7 @@ export const getEvent = (eventId) => {
           {
             model: db.User,
             as: "userJoined",
-            attributes: ["id", "name", "email", "avatar"],
+            attributes: ["id", "name", "email", "avatar", "isJoined"],
           },
           {
             model: db.Status,
