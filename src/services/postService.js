@@ -398,6 +398,11 @@ export const getEvent = (eventId) => {
                 as: "studentData",
                 attributes: ["studentCode"],
               },
+              {
+                model: db.Faculty,
+                as: "facultyData",
+                attributes: ["nameFaculty"],
+              },
             ],
           },
           {
@@ -486,12 +491,16 @@ export const getEvent = (eventId) => {
       response.dataValues.userJoined.forEach((user) => {
         const userJoined = user.dataValues.ListPeopleJoin;
         const student = user.dataValues.studentData;
+        const faculty = user.dataValues.facultyData;
 
         user.dataValues.studentCode = student.studentCode;
+
+        user.dataValues.nameFaculty = faculty.nameFaculty;
 
         user.dataValues.isJoined = userJoined.isJoined;
 
         delete user.dataValues.studentData;
+        delete user.dataValues.facultyData;
         delete user.dataValues.ListPeopleJoin;
       });
 

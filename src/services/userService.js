@@ -61,6 +61,10 @@ export const getAllUsers = ({ page, limit, name, order, id, ...query }) => {
               "point",
             ],
           },
+          {
+            model: db.Faculty,
+            as: "facultyData",
+          },
         ],
       });
       resolve({
