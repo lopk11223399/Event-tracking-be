@@ -391,12 +391,12 @@ export const getEvent = (eventId) => {
           {
             model: db.User,
             as: "userJoined",
-            attributes: ["id", "name", "facultyCode"],
+            attributes: ["id", "name", "birthDate", "facultyCode"],
             include: [
               {
                 model: db.Student,
                 as: "studentData",
-                attributes: ["studentCode"],
+                attributes: ["studentCode", "classCode"],
               },
               {
                 model: db.Faculty,
@@ -494,6 +494,7 @@ export const getEvent = (eventId) => {
         const faculty = user.dataValues.facultyData;
 
         user.dataValues.studentCode = student.studentCode;
+        user.dataValues.classCode = student.classCode;
 
         user.dataValues.nameFaculty = faculty.nameFaculty;
 
@@ -723,7 +724,19 @@ export const getAllEventOfAuthor = (
           {
             model: db.User,
             as: "userJoined",
-            attributes: ["id", "name", "email", "avatar"],
+            attributes: ["id", "name", "birthDate", "facultyCode"],
+            include: [
+              {
+                model: db.Student,
+                as: "studentData",
+                attributes: ["studentCode", "classCode"],
+              },
+              {
+                model: db.Faculty,
+                as: "facultyData",
+                attributes: ["nameFaculty"],
+              },
+            ],
           },
           {
             model: db.Status,
@@ -757,11 +770,28 @@ export const getAllEventOfAuthor = (
         });
       });
 
+      // response.rows.forEach((event) => {
+      //   event.dataValues.userJoined.forEach((user) => {
+      //     const userJoined = user.dataValues.ListPeopleJoin;
+      //     user.dataValues.roomId = userJoined.roomId;
+
+      //     delete user.dataValues.ListPeopleJoin;
+      //   });
+      // });
+
       response.rows.forEach((event) => {
         event.dataValues.userJoined.forEach((user) => {
           const userJoined = user.dataValues.ListPeopleJoin;
-          user.dataValues.roomId = userJoined.roomId;
+          const student = user.dataValues.studentData;
+          const faculty = user.dataValues.facultyData;
 
+          user.dataValues.studentCode = student.studentCode;
+          user.dataValues.classCode = student.classCode;
+          user.dataValues.nameFaculty = faculty.nameFaculty;
+          user.dataValues.isJoined = userJoined.isJoined;
+
+          delete user.dataValues.studentData;
+          delete user.dataValues.facultyData;
           delete user.dataValues.ListPeopleJoin;
         });
       });
