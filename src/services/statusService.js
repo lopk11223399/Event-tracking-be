@@ -38,7 +38,7 @@ export const updateStatusEvent = (eventId, body) => {
           );
         }
         resolve({
-          sucess: response[0] > 0 ? true : false,
+          success: response[0] > 0 ? true : false,
           mess:
             response[0] > 0
               ? "Cập nhật trạng thái thành công"
@@ -46,7 +46,7 @@ export const updateStatusEvent = (eventId, body) => {
         });
       } else {
         resolve({
-          sucess: false,
+          success: false,
           mess: "Không thể cập nhật trạng thái sự kiện",
         });
       }

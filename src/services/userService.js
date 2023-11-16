@@ -218,7 +218,7 @@ export const deleteUserByAdminAndCreator = (roleId, body) => {
           });
         });
         resolve({
-          sucess: true,
+          success: true,
           mess: "Delete successfully",
         });
       }
