@@ -259,7 +259,6 @@ export const getAllEvent = ({
       }
       if (hot) {
         const hotEvent = await db.ListPeopleJoin.findAll({
-          where: query,
           attributes: [
             "eventId",
             [sequelize.fn("COUNT", "*"), "total_participants"],
