@@ -243,8 +243,10 @@ export const getAllEvent = ({
       const offset = !page || +page <= 1 ? 0 : +page - 1;
       const fLimit = +limit || +process.env.LIMIT_USER;
       queries.distinct = true;
-      queries.offset = offset * fLimit;
-      queries.limit = fLimit;
+      if (limit) {
+        queries.offset = offset * fLimit;
+        queries.limit = fLimit;
+      }
       if (order) queries.order = [order];
       if (date) {
         query.startDate = { [Op.lte]: moment(date) };
