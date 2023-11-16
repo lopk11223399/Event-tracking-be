@@ -248,10 +248,6 @@ export const getAllEvent = ({
         queries.limit = fLimit;
       }
       if (order) queries.order = [order];
-      if (date) {
-        query.startDate = { [Op.lte]: moment(date) };
-        query.finishDate = { [Op.gte]: moment(date) };
-      }
       if (title) query.title = { [Op.substring]: title };
       if (status) {
         let statusess = status.map((item) => Number(item));
@@ -268,6 +264,21 @@ export const getAllEvent = ({
         });
         let id = hotEvent.map((item) => item.dataValues.eventId);
         query.id = { [Op.or]: id };
+      }
+      if (date) {
+        const data = await db.Event.findAll();
+        const ids = [];
+        data.forEach((event) => {
+          if (
+            moment(event.dataValues.startDate).format("YYYY-MM-DD") <=
+              moment(date).format("YYYY-MM-DD") &&
+            moment(event.dataValues.finishDate).format("YYYY-MM-DD") >=
+              moment(date).format("YYYY-MM-DD")
+          ) {
+            ids.push(event.dataValues.id);
+          }
+        });
+        query.id = { [Op.or]: ids };
       }
       const response = await db.Event.findAndCountAll({
         where: query,
@@ -500,6 +511,7 @@ export const getEvent = (eventId) => {
         user.dataValues.nameFaculty = faculty.nameFaculty;
 
         user.dataValues.isJoined = userJoined.isJoined;
+        user.dataValues.roomId = userJoined.roomId;
 
         delete user.dataValues.studentData;
         delete user.dataValues.facultyData;
