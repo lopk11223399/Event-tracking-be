@@ -15,6 +15,7 @@ router.get("/detail-event/:id", controllers.getEvent);
 
 router.use(verifyToken);
 router.put("/scanQr", controllers.scanQR);
+router.get("/get-event-joined", controllers.getEventJoined);
 
 router.put("/cancel-event/:eventId", isCreator, controllers.cancelEvent);
 router.get("/get-event-author", isCreator, controllers.getAllEventOfAuthor);

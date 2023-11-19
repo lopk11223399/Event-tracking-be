@@ -75,7 +75,8 @@ export const deleteEventByAdminAndCreator = async (req, res) => {
 
 export const scanQR = async (req, res) => {
   try {
-    const response = await services.scanQR(req.body);
+    const { id } = req.user;
+    const response = await services.scanQR(req.body, id);
     return res.status(200).json(response);
   } catch (error) {
     console.log(error);
@@ -86,6 +87,16 @@ export const getAllEventOfAuthor = async (req, res) => {
   try {
     const { id } = req.user;
     const response = await services.getAllEventOfAuthor(id, req.query);
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getEventJoined = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const response = await services.getEventJoined(id);
     return res.status(200).json(response);
   } catch (error) {
     console.log(error);

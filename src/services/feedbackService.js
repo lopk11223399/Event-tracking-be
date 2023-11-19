@@ -25,14 +25,14 @@ export const createFeedback = (eventId, userId, body) => {
         });
         updateTotalRate(eventId);
         resolve({
-          err: response ? true : false,
-          mess: response ? "Feedback success" : "Feedback fail",
+          success: response ? true : false,
+          mess: response ? "Đánh giá thành công" : "Đã có lỗi gì đó xảy ra",
           response: response,
         });
       } else {
         resolve({
-          err: false,
-          mess: "Feedback fail",
+          success: false,
+          mess: "Bạn không thể đánh giá sự kiện này",
         });
       }
     } catch (error) {
@@ -57,16 +57,14 @@ export const updateFeedback = (eventId, userId, body) => {
         );
         updateTotalRate(eventId);
         resolve({
-          err: response[0] > 0 ? true : false,
+          success: response[0] > 0 ? true : false,
           mess:
-            response[0] > 0
-              ? "Update feedback success"
-              : "Update feedback fail",
+            response[0] > 0 ? "Cập nhật thành công" : "Có lỗi gì đó đã xảy ra",
         });
       } else {
         resolve({
-          err: false,
-          mess: "Can't find feedback",
+          success: false,
+          mess: "Bạn không thể cập nhật đánh giá này",
         });
       }
     } catch (error) {

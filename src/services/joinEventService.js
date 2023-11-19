@@ -1,18 +1,21 @@
 import db, { sequelize } from "../models";
 import { Op, where } from "sequelize";
 
-// duyệt theo status
 export const joinEvent = (userId, eventId, roomId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const deleteEventFollow = await db.ListEventFollow.destroy({
-        where: { [Op.and]: [{ userId: userId }, { eventId: eventId }] },
+      const isCheckFollow = await db.ListEventFollow.findOne({
+        where: { userId: userId, eventId: eventId },
       });
+      if (isCheckFollow) {
+        await db.ListEventFollow.destroy({
+          where: { [Op.and]: [{ userId: userId }, { eventId: eventId }] },
+        });
+      }
       const isJoin = await db.ListPeopleJoin.findOne({
         where: { [Op.and]: [{ userId: userId }, { eventId: eventId }] },
       });
       const checkEvent = await db.Event.findOne({ where: { id: eventId } });
-      console.log(checkEvent.dataValues.status);
       if (
         checkEvent.dataValues.status !== 4 &&
         checkEvent.dataValues.status !== 5
@@ -31,7 +34,7 @@ export const joinEvent = (userId, eventId, roomId) => {
           const response = await db.ListPeopleJoin.create({
             UserId: userId,
             EventId: eventId,
-            roomId: roomId ? roomId : 1,
+            roomId: roomId,
           });
           resolve({
             success: response ? true : false,

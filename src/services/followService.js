@@ -25,7 +25,7 @@ export const getAllFollower = (eventId) => {
         // ],
       });
       resolve({
-        err: response ? true : false,
+        success: response ? true : false,
         mess: response ? "Get data success" : "Get data failure",
         response: response,
       });

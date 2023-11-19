@@ -55,7 +55,7 @@ export const updateNotification = (userId, eventId) => {
           success: response[0] > 0 ? true : false,
           mess:
             response[0] > 0
-              ? "Update notification successfull"
+              ? "Cập nhật thông báo thành công"
               : "Đã có lỗi gì đó xảy ra",
         });
       }

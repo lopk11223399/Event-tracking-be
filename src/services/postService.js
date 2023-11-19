@@ -676,20 +676,72 @@ export const deleteEventByAdminAndCreator = (roleId, body) => {
   });
 };
 
-export const scanQR = (body) => {
+export const scanQR = (body, userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await db.ListPeopleJoin.update(
-        { isJoined: true },
-        {
-          where: { eventId: body.eventId, userId: body.userId },
-        }
-      );
-      resolve({
-        err: response[0] > 0 ? true : false,
-        mess:
-          response[0] > 0 ? "Cập nhật thành công" : "Đã có lỗi gì đó xảy ra",
+      const isCheckStatus = await db.Event.findOne({
+        where: { id: body.eventId },
+        attributes: ["status"],
       });
+      if (isCheckStatus) {
+        if (isCheckStatus.dataValues.status === 3) {
+          const isCheck = await db.ListPeopleJoin.findOrCreate({
+            where: { EventId: body.eventId, UserId: userId },
+            defaults: {
+              isJoined: true,
+              roomId: body.roomId,
+              UserId: userId,
+              EventId: body.eventId,
+            },
+          });
+          if (!isCheck[1]) {
+            const response = await db.ListPeopleJoin.update(
+              { isJoined: true },
+              {
+                where: {
+                  eventId: body.eventId,
+                  userId: userId,
+                  roomId: body.roomId,
+                },
+              }
+            );
+            resolve({
+              success: response[0] > 0 ? true : false,
+              mess:
+                response[0] > 0
+                  ? "Cập nhật thành công"
+                  : "Đã có lỗi gì đó xảy ra",
+            });
+          } else {
+            resolve({
+              success: isCheck[1] ? true : false,
+              mess: isCheck[1]
+                ? "Tham gia thành công"
+                : "Đã có lỗi gì đó xảy ra",
+            });
+          }
+        } else if (isCheckStatus.dataValues.status === 2) {
+          resolve({
+            success: false,
+            mess: "Sự kiện này chưa diễn ra",
+          });
+        } else if (isCheckStatus.dataValues.status === 4) {
+          resolve({
+            success: false,
+            mess: "Sự kiện đã kết thúc",
+          });
+        } else {
+          resolve({
+            success: false,
+            mess: "Sự kiện không tồn tại",
+          });
+        }
+      } else {
+        resolve({
+          success: false,
+          mess: "Sự kiện không tồn tại",
+        });
+      }
     } catch (error) {
       reject(error);
     }
@@ -807,6 +859,30 @@ export const getAllEventOfAuthor = (
           delete user.dataValues.facultyData;
           delete user.dataValues.ListPeopleJoin;
         });
+      });
+      resolve({
+        success: response ? true : false,
+        mess: response ? "Get data success" : "Get data failure",
+        response: response.rows,
+        count: response.count,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const getEventJoined = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.ListPeopleJoin.findAndCountAll({
+        where: { UserId: userId },
+        include: [
+          {
+            model: db.Event,
+            as: "eventData",
+          },
+        ],
       });
       resolve({
         success: response ? true : false,
