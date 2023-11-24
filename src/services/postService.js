@@ -427,24 +427,23 @@ export const getEvent = (eventId) => {
             as: "feedback",
             attributes: ["id", "name", "email", "avatar"],
           },
-          // {
-          //   model: db.User,
-          //   as: "commentEvent",
-          //   attributes: ["id", "name", "email", "avatar"],
-          //   include: [
-          //     {
-          //       model: db.ResponseComment,
-          //       as: "responseData",
-          //       attributes: ["response", "commentId", "createdAt", "userId"],
-          //       include: [
-          //         {
-          //           model: db.User,
-          //           as: "userData",
-          //         },
-          //       ],
-          //     },
-          //   ],
-          // },
+          {
+            model: db.Comment,
+            as: "comments",
+            attributes: ["id", "comment", "createdAt"],
+            include: [
+              {
+                model: db.User,
+                as: "userData",
+                attributes: ["id", "name", "email", "avatar"],
+              },
+              {
+                model: db.User,
+                as: "responseComment",
+                attributes: ["id", "name", "email", "avatar"],
+              },
+            ],
+          },
           {
             model: db.OfflineEvent,
             as: "offlineEvent",
@@ -475,21 +474,26 @@ export const getEvent = (eventId) => {
         delete follower.dataValues.ListEventFollow;
       });
 
-      // response.dataValues.commentEvent.forEach((comment) => {
-      //   const listComment = comment.dataValues.Comment;
+      response.dataValues.comments.forEach((comment) => {
+        const userData = comment.dataValues.userData;
 
-      //   const listResponse = comment.dataValues.responseData.userData;
+        comment.dataValues.name = userData.name;
+        comment.dataValues.avatar = userData.avatar;
+        comment.dataValues.email = userData.email;
 
-      //   comment.dataValues.comment = listComment.comment;
-      //   comment.dataValues.createdAt = listComment.createdAt;
+        delete comment.dataValues.userData;
 
-      //   comment.dataValues.responseData.dataValues.name = listResponse.name;
-      //   comment.dataValues.responseData.dataValues.avatar = listResponse.avatar;
-      //   comment.dataValues.responseData.dataValues.email = listResponse.email;
+        if (comment.dataValues.responseComment.length > 0) {
+          comment.dataValues.responseComment.forEach((response) => {
+            const responseData = response.dataValues.ResponseComment;
 
-      //   delete comment.dataValues.Comment;
-      //   delete comment.dataValues.responseData.dataValues.userData;
-      // });
+            response.dataValues.response = responseData.response;
+            response.dataValues.createdAt = responseData.createdAt;
+
+            delete response.dataValues.ResponseComment;
+          });
+        }
+      });
 
       response.dataValues.feedback.forEach((feedback) => {
         const listFeedback = feedback.dataValues.Feedback;

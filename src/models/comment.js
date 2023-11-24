@@ -12,6 +12,16 @@ module.exports = (sequelize, DataTypes) => {
       Comment.hasOne(models.Event, {
         foreignKey: "id",
       });
+
+      Comment.belongsTo(models.User, {
+        foreignKey: "userId",
+        as: "userData",
+      });
+
+      Comment.belongsToMany(models.User, {
+        through: "ResponseComment",
+        as: "responseComment",
+      });
     }
   }
   Comment.init(

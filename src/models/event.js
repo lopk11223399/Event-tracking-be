@@ -41,10 +41,10 @@ module.exports = (sequelize, DataTypes) => {
         through: "ListEventFollow",
         as: "followers",
       });
-      Event.belongsToMany(models.User, {
-        through: "Comment",
-        as: "commentEvent",
-      });
+      // Event.belongsToMany(models.User, {
+      //   through: "Comment",
+      //   as: "commentEvent",
+      // });
       Event.belongsToMany(models.User, {
         through: "ListPeopleJoin",
         as: "userJoined",
@@ -52,6 +52,10 @@ module.exports = (sequelize, DataTypes) => {
       Event.belongsToMany(models.User, {
         through: "Feedback",
         as: "feedback",
+      });
+      Event.hasMany(models.Comment, {
+        foreignKey: "eventId",
+        as: "comments",
       });
     }
   }
