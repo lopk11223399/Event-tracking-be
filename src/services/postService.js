@@ -478,6 +478,7 @@ export const getEvent = (eventId) => {
         const userData = comment.dataValues.userData;
 
         comment.dataValues.name = userData.name;
+        comment.dataValues.id = userData.id;
         comment.dataValues.avatar = userData.avatar;
         comment.dataValues.email = userData.email;
 
