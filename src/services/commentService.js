@@ -1,14 +1,12 @@
 import { Op } from "sequelize";
 import db from "../models";
 
-// trả về thằng response comment
-
 export const postComment = (body, id, eventId) =>
   new Promise(async (resolve, reject) => {
     try {
       const response = await db.Comment.create({
-        UserId: id,
-        EventId: eventId,
+        userId: id,
+        eventId: eventId,
         comment: body.comment,
       });
       resolve({
