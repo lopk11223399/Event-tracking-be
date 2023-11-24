@@ -690,7 +690,11 @@ export const scanQR = (body, userId) => {
       if (isCheckStatus) {
         if (isCheckStatus.dataValues.status === 3) {
           const isCheck = await db.ListPeopleJoin.findOrCreate({
-            where: { EventId: body.eventId, UserId: userId },
+            where: {
+              EventId: body.eventId,
+              UserId: userId,
+              roomId: body.roomId,
+            },
             defaults: {
               isJoined: true,
               roomId: body.roomId,
