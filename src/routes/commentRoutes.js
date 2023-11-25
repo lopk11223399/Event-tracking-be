@@ -6,9 +6,9 @@ const router = express.Router();
 
 router.use(verifyToken);
 
-router.post("/post-comment/:eventId", controllers.postComment);
-router.put("/update-comment/:commentId", controllers.updateComment);
-router.delete("/delete-comment/:commentId", controllers.deleteComment);
+router.post("/post-comment", controllers.postComment);
+router.put("/update-comment", controllers.updateComment);
+router.delete("/delete-comment", controllers.deleteComment);
 
 router.post(
   "/response-comment/:commentId",

@@ -18,8 +18,12 @@ module.exports = (sequelize, DataTypes) => {
         as: "userData",
       });
 
-      Comment.belongsToMany(models.User, {
-        through: "ResponseComment",
+      // Comment.belongsToMany(models.User, {
+      //   through: "ResponseComment",
+      //   as: "responseComment",
+      // });
+      Comment.hasMany(models.ResponseComment, {
+        foreignKey: "commentId",
         as: "responseComment",
       });
     }

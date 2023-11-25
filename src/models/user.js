@@ -36,9 +36,9 @@ module.exports = (sequelize, DataTypes) => {
         through: "ListEventFollow",
         as: "eventFollowed",
       });
-      User.belongsToMany(models.Comment, {
-        through: "ResponseComment",
-      });
+      // User.belongsToMany(models.Comment, {
+      //   through: "ResponseComment",
+      // });
       User.belongsToMany(models.Event, {
         through: "ListPeopleJoin",
       });

@@ -438,9 +438,16 @@ export const getEvent = (eventId) => {
                 attributes: ["id", "name", "email", "avatar"],
               },
               {
-                model: db.User,
+                model: db.ResponseComment,
                 as: "responseComment",
-                attributes: ["id", "name", "email", "avatar"],
+                attributes: ["id", "response", "createdAt"],
+                include: [
+                  {
+                    model: db.User,
+                    as: "userData",
+                    attributes: ["id", "name", "email", "avatar"],
+                  },
+                ],
               },
             ],
           },
@@ -486,12 +493,14 @@ export const getEvent = (eventId) => {
 
         if (comment.dataValues.responseComment.length > 0) {
           comment.dataValues.responseComment.forEach((response) => {
-            const responseData = response.dataValues.ResponseComment;
+            const responseData = response.dataValues.userData;
 
-            response.dataValues.response = responseData.response;
-            response.dataValues.createdAt = responseData.createdAt;
+            response.dataValues.userId = responseData.id;
+            response.dataValues.name = responseData.name;
+            response.dataValues.avatar = responseData.avatar;
+            response.dataValues.email = responseData.email;
 
-            delete response.dataValues.ResponseComment;
+            delete response.dataValues.userData;
           });
         }
       });
