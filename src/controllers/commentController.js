@@ -26,8 +26,8 @@ export const updateComment = async (req, res) => {
 export const deleteComment = async (req, res) => {
   try {
     const { id } = req.user;
-    const { eventId } = req.params;
-    const response = await services.deleteComment(id, eventId);
+    const { commentId } = req.params;
+    const response = await services.deleteComment(id, commentId);
     return res.status(200).json(response);
   } catch (error) {
     console.log(error);

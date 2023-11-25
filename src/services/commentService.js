@@ -41,11 +41,11 @@ export const updateComment = (body, id, eventId) =>
     }
   });
 
-export const deleteComment = (id, eventId) =>
+export const deleteComment = (userId, commentId) =>
   new Promise(async (resolve, reject) => {
     try {
       const findIdComment = await db.Comment.findAll({
-        where: { [Op.and]: [{ userId: id }, { eventId: eventId }] },
+        where: { [Op.and]: [{ userId: userId }, { id: commentId }] },
         attributes: ["id"],
       });
       const response = await db.Comment.destroy({

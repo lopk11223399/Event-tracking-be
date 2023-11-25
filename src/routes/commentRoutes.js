@@ -7,8 +7,8 @@ const router = express.Router();
 router.use(verifyToken);
 
 router.post("/post-comment/:eventId", controllers.postComment);
-router.put("/update-comment/:eventId", controllers.updateComment);
-router.delete("/delete-comment/:eventId", controllers.deleteComment);
+router.put("/update-comment/:commentId", controllers.updateComment);
+router.delete("/delete-comment/:commentId", controllers.deleteComment);
 
 router.post(
   "/response-comment/:commentId",
