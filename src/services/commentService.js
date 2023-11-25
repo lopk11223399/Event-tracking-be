@@ -20,13 +20,13 @@ export const postComment = (body, id, eventId) =>
     }
   });
 
-export const updateComment = (body, id, eventId) =>
+export const updateComment = (body, userId, commentId) =>
   new Promise(async (resolve, reject) => {
     try {
       const response = await db.Comment.update(
         { comment: body.comment },
         {
-          where: { [Op.and]: [{ userId: id }, { eventId: eventId }] },
+          where: { [Op.and]: [{ userId: userId }, { id: commentId }] },
         }
       );
       resolve({
@@ -44,16 +44,14 @@ export const updateComment = (body, id, eventId) =>
 export const deleteComment = (userId, commentId) =>
   new Promise(async (resolve, reject) => {
     try {
-      const findIdComment = await db.Comment.findAll({
-        where: { [Op.and]: [{ userId: userId }, { id: commentId }] },
-        attributes: ["id"],
-      });
       const response = await db.Comment.destroy({
-        where: { [Op.and]: [{ userId: id }, { eventId: eventId }] },
+        where: { [Op.and]: [{ userId: userId }, { id: commentId }] },
       });
-      const destroy = await db.ResponseComment.destroy({
-        where: { commentId: findIdComment[0].dataValues.id },
-      });
+      if (response) {
+        const destroy = await db.ResponseComment.destroy({
+          where: { commentId: commentId },
+        });
+      }
       resolve({
         success: response ? true : false,
         mess: response
